@@ -1,0 +1,7 @@
+<div class="modal-body">
+    <span>你正在给{{vm.selectedMoreContacts.length}}个客户发送{{vm.needCostSmsNum}}条短信，确定要发送吗？</span>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.sendMsmSubmit()">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.sendMsmcancel()">取消</button>
+</div>

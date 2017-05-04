@@ -1,0 +1,25 @@
+<div class="col-xs-3" style="line-height:34px;margin: 20px 0;">
+    总数{{vm.totalCount}}条 共{{numPages}}页
+        <span>每页
+            <div class="dropdown inlineBlock">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{vm.pageSize}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li ng-repeat="pageSize in [10,20,30,40,50]" ng-click="vm.pageSize = pageSize; vm.pageFlip();"><a>{{pageSize}}</a></li>
+                </ul>
+            </div>
+            条
+        </span>
+</div>
+<div class="col-xs-9">
+    <div class="f-r mt20 ml15" ng-init="vm.currentLeapPage = 1">
+        <input ng-model="vm.currentLeapPage" type="number" min="1" class="form-control f-l" style="width: 50px; margin-top: 0px" placeholder="">
+        <sapn class="btn btn-default inlineBlock f-l" ng-if="vm.currentLeapPage > 0 &&  vm.currentLeapPage <= numPages" ng-click="vm.currentPage = vm.currentLeapPage; vm.pageFlip();">跳页</sapn>
+        <sapn class="btn btn-default inlineBlock f-l disabled" ng-if="!(vm.currentLeapPage > 0 &&  vm.currentLeapPage <= numPages)" >跳页</sapn>
+    </div>
+    <nav class="xw-pagination-container">
+        <uib-pagination class="f-r" boundary-links="true" first-text="首页" last-text="末页" previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages" total-items="vm.totalCount" items-per-page="vm.pageSize" ng-model="vm.currentPage" ng-change="vm.pageFlip()"></uib-pagination>
+    </nav>
+</div>

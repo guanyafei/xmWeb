@@ -1,0 +1,54 @@
+.xw-dl-horizontal dt {
+    margin-bottom: 8px;
+}
+.xw-dl-horizontal dd {
+    margin-bottom: 8px;
+}
+.xw-search .active {
+    color: #000;
+    font-weight: bold;
+}
+.xw-business .active {
+    color: #000;
+    font-weight: bold;
+}
+.danger {
+    color:#a94442;
+}
+.lightgreen{
+    background: lightblue;
+}
+
+.rating {
+    color: #a9a9a9;
+    margin: 0;
+    padding: 0;
+}
+ul.rating {
+    display: inline-block;
+}
+.rating li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 1px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+.rating .filled {
+    color: #ffee33;
+}
+
+.recomlist{
+    display: block;
+    list-style: none;
+}
+.recomlist li{
+    display: inline-block;
+}
+.recomlist li a{
+    text-decoration: none;
+}
+.starlevel span{
+    font-size: 22px;
+}

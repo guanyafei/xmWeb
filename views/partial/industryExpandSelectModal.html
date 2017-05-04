@@ -1,0 +1,58 @@
+<div class="modal fade" id="industryExpandSelectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header position-rel">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"  ng-if="vm.pluginId == 'xw:transfer' && !vm.singleIndustryFlag">
+                    适合经营
+                    <button type="button" class="btn btn-info ml30" data-dismiss="modal">确定</button>
+                </h4>
+                <h4 class="modal-title" ng-if="vm.pluginId == 'xw:transfer' && vm.singleIndustryFlag">
+                    行业
+                    <button type="button" class="btn btn-info ml30" data-dismiss="modal">确定</button>
+                </h4>
+                <h4 class="modal-title" ng-if="vm.pluginId == 'xw:siting'">
+                    求租行业
+                    <button type="button" class="btn btn-info ml30" data-dismiss="modal">确定</button>
+                </h4>
+
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <div ng-if="!vm.singleIndustryFlag">
+                        <span>已选择：</span>
+                        <span class="choiseSelect" ng-repeat="choiseItem in vm.choiseIndustry" ng-click="vm.delChoiseIndustryItem(choiseItem)">
+                        {{choiseItem.name}}
+                        <span class="del" >X</span>
+                    </span>
+                    </div>
+                    <div ng-if="!vm.singleIndustryFlag">
+                        <ul class="industryWrap">
+                            <li ng-repeat="industry in vm.allIndustry" class="clearfix">
+                                <div class="industryItem-wrap">
+                                    <span  class="industryItem" ng-click="vm.addChoiseIndustry(industry, $index)" ng-class="{red: industry.choise}" >{{industry.name}}</span>
+                                </div>
+                                <div class="smallIndustryItem-wrap">
+                                    <span class="smallIndustryItem" ng-click="vm.addChoiseIndustry(samllIndustry, $index)" ng-repeat="samllIndustry in industry.subIndustry" ng-class="{red: samllIndustry.choise}">{{samllIndustry.name}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div ng-if="vm.singleIndustryFlag">
+                        <ul class="industryWrap">
+                            <li ng-repeat="industry in vm.allIndustry" class="clearfix">
+                                <div class="industryItem-wrap">
+                                    <span  class="industryItem">{{industry.name}}</span>
+                                </div>
+                                <div class="smallIndustryItem-wrap">
+                                    <span class="smallIndustryItem" ng-click="vm.singleIndustry = samllIndustry" ng-repeat="samllIndustry in industry.subIndustry" data-dismiss="modal" ng-class="{red: samllIndustry.code == vm.singleIndustry.code}">{{samllIndustry.name}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

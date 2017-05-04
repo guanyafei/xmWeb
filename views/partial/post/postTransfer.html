@@ -1,0 +1,541 @@
+<div class="transfer" ng-show="vm.pluginId == vm.transferPluginId">
+    <h4 class="lh65 05em">转店信息内容</h4>
+
+    <form class="form-horizontal" name="transferForm" novalidate>
+
+        <!--信息来源-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>信息来源</label>
+                <div class="col-sm-2">
+                    <select name="informationSource" class="form-control" ng-model="vm.informationSource" required
+                            ng-options="type.value as type.name for type in vm.informationSourceSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-3"><span style="color:red"
+                                            ng-show="transferForm.informationSource.$error.required">请选择信息来源</span></div>
+            </div>
+        </div>
+
+
+        <!--类型-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>类型</label>
+                <div class="col-sm-2">
+                    <select name="transferType" class="form-control" ng-model="vm.transferType" required
+                            ng-options="type.value as type.name for type in vm.transferTypes">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-3"><span style="color:red"
+                                            ng-show="transferForm.transferType.$error.required">请选择类型</span></div>
+            </div>
+        </div>
+
+        <!--副标题-->
+        <!--<div class="form-group">-->
+            <!--<div class="row">-->
+                <!--<label class="col-sm-2 control-label">副标题</label>-->
+                <!--<div class="col-sm-5">-->
+                    <!--<input name="slogan" ng-focus="vm.sloganInit()" type="text" class="form-control" ng-maxlength="20" placeholder="限20字" ng-model="vm.slogan" >-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div ng-show="vm.submitted" class="row">-->
+                <!--<div class="col-sm-2"></div>-->
+                <!--<div class="col-sm-5">-->
+                    <!--<span style="color:red" ng-show="transferForm.slogan.$error.maxlength">副标题最长为20字符</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span
+                    ng-if="vm.transferType != vm.attractInvestmentType"><span class="required">*</span>店名</span><span
+                    ng-if="vm.transferType == vm.attractInvestmentType"><span class="required">*</span>楼盘</span></label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="shopName" ng-model="vm.shopName" required ng-minlength="1" ng-maxlength="20">
+                </div>
+                <label class="col-sm-3 control-label" style="text-align: left">
+                    <span style="color: #7a43b6;">(签约需填写店名，否则无法签约)</span>
+                </label>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.shopName.$error.required">店名不能为空 </span>
+                    <span style="color:red" ng-show="transferForm.shopName.$error.maxlength">店名长度不能大于20位 </span>
+                </div>
+            </div>
+        </div>
+
+
+        <!--行业-->
+        <div class="form-group"  ng-if="vm.transferType == vm.shopTransferType">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required" >*</span>行业</label>
+                <div class="col-sm-10">
+                    <button class="btn btn-info" data-toggle="modal" data-target="#industryExpandSelectModal" ng-click="vm.singleIndustryFlag = true">
+                        <span ng-if="vm.singleIndustry">{{vm.singleIndustry.name}}</span>
+                        <span ng-if="!vm.singleIndustry">选择业态</span>
+                    </button>
+                </div>
+                <!--<div class="col-sm-2">-->
+                    <!--<select name="industry" class="form-control" ng-model="vm.industryId" ng-required="vm.transferType == vm.shopTransferType"-->
+                            <!--ng-change="vm.loadSmallIndustries(vm.industryId)"-->
+                            <!--ng-options="industry.code as industry.name for industry in vm.industriesSelect">-->
+                        <!--<option value="">请选择</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col-sm-2" >-->
+                    <!--<select name="smallIndustry" class="form-control" ng-model="vm.smallIndustryId" ng-required="vm.transferType == vm.shopTransferType"-->
+
+                            <!--ng-change="vm.titleInit();vm.sloganInit()"-->
+                            <!--ng-options="smallIndustry.code as smallIndustry.name for smallIndustry in vm.smallIndustriesSelect">-->
+                        <!--<option value="">请选择</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <span style="color:red" ng-show="!vm.singleIndustry">请选择行业</span>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!--<div ng-include="'views/partial/post/addressAndMap.html'"></div>-->
+        <!--区域-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>区域</label>
+                <div class="col-sm-2">
+                    <select name="city" class="form-control" ng-model="vm.cityId"
+                            ng-required="!vm.businessAreasSelect || vm.businessAreasSelect.length == 0"
+                            ng-change="vm.loadDistricts(vm.cityId)"
+                            ng-options="city.code as city.name for city in vm.cities">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select name="district" class="form-control"  ng-model="vm.districtId"
+                            ng-required="!vm.businessAreasSelect || vm.businessAreasSelect.length == 0"
+                            ng-change="vm.loadBusinessAreas(vm.districtId)"
+                            ng-options="district.code as district.name for district in vm.districtsSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-2" ng-if="vm.businessAreasSelect && vm.businessAreasSelect.length > 0">
+                    <select name="businessArea" class="form-control" ng-model="vm.businessAreaId" required
+                            ng-change="vm.changeBusinessArea()"
+                            ng-options="businessArea.code as businessArea.name for businessArea in vm.businessAreasSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.district.$error.required">请选择区域</span></div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.businessArea.$error.required">请选择区域</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>地址</label>
+                <div class="col-sm-5 col-md-5">
+                    <input name="address" type="text" class="form-control" placeholder="地址" ng-model="vm.address"
+                           required ng-maxlength="50">
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.address.$error.required">地址不能为空</span></div>
+                <span style="color:red" ng-show="transferForm.address.$error.maxlength">地址长度不能超过50个字符</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>在地图上标注</label>
+                <div class="col-sm-5">
+                    <input type="button" value="在地图上标注" ng-click="vm.showMap('transferMapContainer')" class="btn btn-info btn-sm">&nbsp;
+                    <input type="button" value="收起地图" ng-click="vm.hiddenMap()" class="btn btn-info btn-sm">&nbsp;
+                    <br><br>
+                    <!--百度地图 -->
+                    <div id='transferMapContainer' style="width:700px;height:400px;" ng-show="vm.showMaped"></div>
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="!vm.markered">请在地图上标注位置</span>
+                    <span style="color:green" ng-show="vm.markered">已标注</span>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <!--面积-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>面积</label>
+                <div class="col-sm-10">
+                    <input name="area" type="number" class="input-md" placeholder="面积" ng-model="vm.area" required min="1"
+                           max="999999" ng-maxlength="6" ng-pattern="/^(-?[0-9]+)$/">
+                    <span class="ml15">平米</span>
+
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.area.$error.required">面积不能为空</span>
+                    <span style="color:red" ng-show="transferForm.area.$error.max">面积不能大于999999平米</span>
+                    <span style="color:red" ng-show="transferForm.area.$error.min">面积不能小于1平米</span>
+                    <span style="color:red" ng-show="transferForm.area.$error.pattern">面积不能有小数</span>
+                    <span style="color:red" ng-show="transferForm.area.$error.number">面积只能为数字</span>
+                </div>
+            </div>
+        </div>
+
+        <!--租金-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>租金</label>
+                <div class="col-sm-2 zero-padding-right">
+                    <input name="rent" type="number" class="input-md" placeholder="租金" ng-model="vm.rent" min="1"
+                            required ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/">
+                </div>
+                <div class="col-sm-2 zero-padding">
+                    <select name="rentMeasure" class="select-md" ng-model="vm.rentMeasure" ng-options="rentMeasure.value as rentMeasure.name for rentMeasure in vm.rentMeasureSelect" required>
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.rent.$error.pattern">租金为6为整数+2位小数</span>
+                    <span style="color:red" ng-show="transferForm.rent.$error.min">租金不能小于1元</span>
+                    <span style="color:red" ng-show="transferForm.rent.$error.required">租金不能为空</span>
+                    <span style="color:red" ng-show="transferForm.rent.$error.number">租金只能为数字</span>
+                    <span style="color:red" ng-show="transferForm.rentMeasure.$error.required">租金单位不能为空</span>
+                </div>
+            </div>
+        </div>
+
+        <!--转让费-->
+        <div class="form-group"   ng-if="vm.transferType == vm.shopTransferType">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>转让费</label>
+                <div class="col-sm-10" ng-if="vm.transferType == vm.shopTransferType">
+                    <input name="transferFee" type="number" class="input-md" placeholder="转让费"
+                           ng-model="vm.transferFee" min="0.01" max="9999.99" required ng-pattern="/^((-?[0-9]+)|(-?[0-9]+\.[0-9]{1,2}))$/" step="0.01">
+                    <span class="ml15">万元</span>
+                </div>
+            </div>
+
+            <div class="row mt20" ng-if="vm.transferType == vm.shopTransferType">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <input type="checkbox" ng-model="vm.negotiable">转让费显示为可面议
+                </div>
+            </div>
+            <div ng-show="vm.submitted " class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.transferFee.$error.max ">转让费不能大于9999.99万元</span>
+                    <span style="color:red" ng-show="transferForm.transferFee.$error.min ">转让费不能小于0.01万元</span>
+                    <span style="color:red" ng-show="transferForm.transferFee.$error.required && vm.transferType ==vm.shopTransferType">转让费不能为空</span>
+                    <span style="color:red" ng-show="transferForm.transferFee.$error.pattern">不能超过两位小数</span>
+                    <span style="color:red" ng-show="transferForm.transferFee.$error.number">必须是数字</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!--适合经营-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>适合经营</label>
+                <div class="col-sm-10">
+                    <button class="btn-info btn" data-toggle="modal" data-target="#industryExpandSelectModal" ng-click="vm.singleIndustryFlag = false">选择适合经营</button>
+                </div>
+                <!--<div class="col-sm-2">-->
+                    <!--<select name="suitableIndustry" class="form-control" ng-model="vm.suitableIndustryId"-->
+                            <!--ng-change="vm.loadSuitableSmallIndustries()"-->
+                            <!--ng-options="industry.code as industry.name for industry in vm.suitableIndustriesSelect">-->
+                        <!--<option value="">请选择</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col-sm-2" >-->
+                    <!--<select name="suitableSmallIndustry" class="form-control" ng-model="vm.suitableSmallIndustryId"-->
+                            <!--ng-options="smallIndustry.code as smallIndustry.name for smallIndustry in vm.suitableSmallIndustriesSelect">-->
+                        <!--<option value="">请选择</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<button class="btn btn-primary" ng-disabled="vm.districtIds.length == 10" ng-click="vm.addSuitableIndustry()"> +添加该行业业态</button>-->
+                <!--</div>-->
+            </div>
+            <div class="row mt10">
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-10 ">
+                    <span class="choiseSelect" ng-repeat="choiseItem in vm.choiseIndustry" ng-click="vm.delChoiseIndustryItem(choiseItem)">
+                        {{choiseItem.name}}
+                        <span class="del" >X</span>
+                    </span>
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <div class="col-sm-10"><span style="color:red" ng-show="vm.choiseIndustry.length == 0">请添加行业业态</span></div>
+                    <div class="col-sm-10"><span style="color:red" ng-if="vm.suitableIndustryMsg != ''">{{vm.suitableIndustryMsg}}</span></div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="form-group">-->
+            <!--<div class="col-sm-offset-2 col-sm-10 col-md-10">-->
+                <!--<div class="f-l mr10 font-blue" style="cursor: pointer" ng-repeat="industry in vm.suitableIndustryIds"><span ng-click="vm.removeSelectedItem('industry',industry)">{{industry | industryName}}<i class="glyphicon glyphicon-remove"></i></span></div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div ng-if="vm.suitableIndustryMsg != ''" class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                <span style="color:red">{{vm.suitableIndustryMsg}}</span>
+            </div>
+        </div>
+
+        <!--is can transfer emptily-->
+        <div class="form-group" ng-if="vm.transferType == vm.shopTransferType">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required" >*</span>可否空转</label>
+                <div class="col-sm-2 radio-to-label" >
+                    <label>
+                        <input type="radio" ng-model="vm.emptyTransfer" value="1">
+                        可空转
+                    </label>
+                </div>
+                <div class="col-sm-2 radio-to-label">
+                    <label>
+                        <input type="radio" ng-model="vm.emptyTransfer" value="2">
+                        不可空转
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group"   ng-if="vm.transferType == vm.shopTransferType">
+            <div class="row">
+                <label class="col-sm-2 control-label">经营状态</label>
+                <div class="col-sm-2">
+                    <select name="businessStatus" class="form-control" ng-model="vm.businessStatus"
+                            ng-options="businessStatus.value as businessStatus.name for businessStatus in vm.businessStatusSelect">
+                        <!--<option value="">请选择</option>-->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <!--物业配套-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">物业配套</label>
+                <div class="col-sm-5">
+                    <span style="margin-right: 33px;"  ng-repeat="facilities in vm.facilitiesSelect">
+                        <input type="checkbox" ng-checked="facilities.check"  ng-modol="facilities.value" ng-click="vm.addFacilities(facilities.value)">{{facilities.name}}
+                    </span>
+
+                    <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="vm.selectAllFacilitiesStatus" ng-click="vm.selectAllFacilities()"> <span style="color:red;">全选/取消</span>
+                </div>
+            </div>
+        </div>
+
+        <!--标题-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>标题</label>
+                <div class="col-sm-5">
+                    <input name="title" ng-focus="vm.titleInit()" type="text" class="form-control" ng-maxlength="30" placeholder="请输入标题" ng-model="vm.title" required>
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.title.$error.required">标题不能为空</span>
+                    <span style="color:red" ng-show="transferForm.title.$error.maxlength">标题最长为30字符</span>
+                </div>
+            </div>
+        </div>
+
+        <!--剩余合同期-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"  ng-if="vm.transferType != vm.attractInvestmentType">剩余合同期</label>
+                <label class="col-sm-2 control-label" ng-if="vm.transferType == vm.attractInvestmentType">合同期</label>
+                <div class="col-sm-2">
+                    <select name="contractPeriod" class="form-control" ng-model="vm.contractPeriod"
+                            ng-options="contractPeriod.value as contractPeriod.name for contractPeriod  in vm.contractPeriodSelect">
+                        <!--<option value="">请选择</option>-->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--联系人-->
+        <div class="form-group" ng-if="vm.isRevamp">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>联系人</label>
+                <div class="col-sm-5">
+                    <input type="text" placeholder="联系人" class="form-control" name="contact"  ng-model="vm.contact" required ng-minlength="2" ng-maxlength="12">
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.contact.$error.required">联系人不能为空</span>
+                    <span style="color:red" ng-show="transferForm.contact.$error.minlength">联系人最少2个字符</span>
+                    <span style="color:red" ng-show="transferForm.contact.$error.maxlength">联系人最长12个字符</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!--QQ 微信 其他-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">QQ</label>
+                <div class="col-sm-2">
+                    <input type="text" placeholder="请填写QQ" class="form-control" name="qqNumber" ng-model="vm.qqNumber" ng-maxlength="20" >
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="transferForm.qqNumber.$error.maxlength">QQ长度不得超过20位</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">微信号</label>
+                <div class="col-sm-2">
+                    <input type="text" placeholder="请填写微信号" class="form-control" name="wechatNumber" ng-model="vm.wechatNumber" ng-maxlength="20">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="transferForm.wechatNumber.$error.maxlength">微信长度不得超过20位</span>
+               </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">其他手机号</label>
+                <div class="col-sm-2">
+                    <input type="text" placeholder="请填写其他手机号" class="form-control" name="otherContact" ng-keyup="vm.checkMobileToExists()" ng-model="vm.otherContact" ng-maxlength="11" ng-minlength="11">
+                </div>
+            </div>
+           <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="transferForm.otherContact.$error.maxlength">其他号码长度11位</span>
+                    <span style="color:red" ng-show="transferForm.otherContact.$error.minlength">其他号码长度11位</span>
+                    <span style="color:red" ng-if="vm.checkMobileToExistsResult">该号码已经是其他信息的合伙人号码</span>
+               </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required" >*</span>描述</label>
+                <div class="col-sm-7">
+                    <textarea name="remark" class="form-control" rows="3" ng-model="vm.remark" placeholder="请输入描述，字数少于1000"
+                              ng-maxlength="1000" required></textarea>
+                </div>
+                <div class="col-sm-2 word-count">
+                    {{vm.remark.length}}/1000
+                </div>
+            </div>
+            <div ng-show="vm.submitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="transferForm.remark.$error.required">描述不能为空</span>
+                    <span style="color:red" ng-show="transferForm.remark.$error.maxlength">描述不能超过1000个字符</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">添加照片</label>
+                <div class="col-sm-10">
+                    <div id="transferThumbContainer">
+
+                    </div>
+
+                    <button ng-if="vm.photos.length < 8" class="add"
+                            ngf-select="vm.uploadFile($file, $invalidFiles, 'transferThumbContainer')" multiple>
+
+                        <!--<ul>-->
+                            <!--<li ng-repeat="f in vm.f">-->
+                                <!--<img src="{{f.url}}">-->
+                            <!--</li>-->
+                        <!--</ul>-->
+
+                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                        <span class="glyphicon-class">添加图片</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group cle">
+            <div class="row">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a type="submit" class="btn btn-lg btn-info" href="javascript:void(0)"
+                       ng-click="vm.transferPost(transferForm.$valid)"><span ng-if="!vm.isRevamp">发布信息</span><span ng-if="vm.isRevamp">提交</span></a>
+                    <a ng-if="!vm.isRevamp" type="submit" class="btn btn-primary btn-lg" href="javascript:void(0)"
+                       ng-click="vm.transferPostAndTake(transferForm.$valid)">发布并领取业务</a>
+                </div>
+            </div>
+        </div>
+        <br/>
+    </form>
+</div>
+
+<div ng-include="'views/partial/industryExpandSelectModal.html'"></div>
+

@@ -1,0 +1,52 @@
+<div class="modal fade" id="viewBargainLatest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header position-rel">
+                <h4 class="modal-title">最近报价
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </h4>
+
+            </div>
+            <div class="modal-body">
+                <div ng-if="vm.bargainInfo.lastBargainTime == 0">
+                    没有最近报价
+                </div>
+                <div ng-if="vm.bargainInfo.lastBargainTime != 0">
+                    <div class="">
+                        <div class="col-sm-12">
+                            <label>报价时间：</label><span>{{vm.bargainInfo.lastBargainTime | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-sm-6 ">
+                            <label>服务方式：</label>
+                            <span ng-if="vm.bargainInfo.priceInfo.mode == vm.serveByResult && vm.bargainInfo.pluginId == vm.transferPluginId">服务到转出为止
+                            </span>
+                            <span ng-if="vm.bargainInfo.priceInfo.mode == vm.serveByResult &&  vm.bargainInfo.pluginId == vm.sitingPluginId">服务到找到为止
+                            </span>
+                            <span ng-if="vm.bargainInfo.priceInfo.mode == vm.serveByCycle ||  vm.bargainInfo.priceInfo.mode == undefined">服务{{vm.bargainInfo.priceInfo.days | dayToYearMonthDay}}</span>
+                        </div>
+                        <div class="col-sm-3 ">
+                            <label>报价：</label><span>{{vm.bargainInfo.priceInfo.discountPrice/100}}</span>元
+                        </div>
+                        <div class="col-sm-3 " ng-if="vm.bargainInfo.priceInfo.prepayPrice != undefined">
+                            <label>预付：</label><span>{{vm.bargainInfo.priceInfo.prepayPrice/100}}</span>元
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="">
+                        <div class="col-sm-6 " ng-if="vm.bargainInfo.priceInfo.advertising != undefined">
+                            <label>广告位：</label><span ng-if="vm.bargainInfo.priceInfo.advertising != 0">{{vm.bargainInfo.priceInfo.advertisementTitle}}</span><span ng-if="vm.bargainInfo.priceInfo.advertising == 0">无广告</span>
+                        </div>
+                        <div class="col-sm-6 " ng-if="vm.bargainInfo.priceInfo.advertisingDays != undefined">
+                            <label >广告位时间：</label><span ng-if="vm.bargainInfo.priceInfo.advertisingDays != 0">{{vm.bargainInfo.priceInfo.advertisingDays | dayToMonthDay}}</span><span ng-if="vm.bargainInfo.priceInfo.advertisingDays == 0">0天</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

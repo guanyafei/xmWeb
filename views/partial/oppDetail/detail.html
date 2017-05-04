@@ -1,0 +1,306 @@
+<div class="slider f-l mb40 col-xs-6 col-md-6 col-lg-6" ng-if="vm.info.pluginId != 'xw:siting'">
+    <img ng-if="!vm.postPhotos.length" ng-src="{{vm.defaultPicUrl}}" width="100%" height="200">
+    <scroll-thumb ng-if="vm.postPhotos.length" big-pics="vm.postPhotos" small-pics = "vm.postPhotos"></scroll-thumb>
+</div>
+
+<div class="f-l ml15 mb40 col-xs-6 col-md-6 col-lg-6">
+
+    <!--转店的开始-->
+    <dl ng-if="vm.info.pluginId == 'xw:transfer'" class="dl-horizontal xw-dl-horizontal">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+
+            <div ng-if="vm.info.creatorNickname">
+                <dt style="margin: 0;">发布者：</dt>
+                <dd>
+                    {{vm.info.creatorNickname}}
+                    <span>【{{vm.info.userType | userTypeFilter}}】</span>
+                </dd>
+            </div>
+            <div ng-if="vm.info.content.type">
+                <dt style="margin: 0;"><span class="pr2em">类</span>型：</dt>
+                <dd>{{vm.info.content.type | transferType}}</dd>
+            </div>
+            <div class="empty"></div>
+
+            <div ng-if="vm.info.contact">
+                <dt style="margin: 0;"><span class="pr2em">客</span>户：</dt>
+                <table>
+                    <tr>
+                        <td>{{vm.info.contact}}, {{vm.info.mobile}},{{vm.info.content.otherContact}}</td>
+                    </tr>
+                </table>
+                <!--<dt>客户：</dt>-->
+                <!--<dt></dt>-->
+                <!--<dt>{{vm.info.mobile}}</dt>-->
+                <!--<dt>{{vm.info.content.otherContact}}</dt>-->
+            </div>
+            <div  ng-if="vm.info.content.qqNumber">
+                <dt style="margin: 0;">QQ：</dt>
+                <dd>{{vm.info.content.qqNumber}}</dd>
+            </div>
+            <div  ng-if="vm.info.content.wechatNumber">
+                <dt style="margin: 0;"><span class="pr2em">微</span>信：</dt>
+                <dd>{{vm.info.content.wechatNumber}}</dd>
+            </div>
+            <div class="empty"></div>
+
+            <div ng-if="vm.info.content.area">
+                <dt style="margin: 0;"><span class="pr2em">面</span>积：</dt>
+                <dd>{{vm.info.content.area}}平米</dd>
+            </div>
+            <div>
+                <dt style="margin: 0;"><span class="pr2em">租</span>金：</dt>
+                <dd ng-if="vm.info.content.rent">
+                    {{vm.info.content.rent/100}}
+                    {{vm.info.content.rentMeasure | rentMeasureFilter}}
+                    <!--<span ng-if="!vm.info.content.rentMeasure">元/月</span>-->
+                </dd>
+                <!--<dd ng-if="!vm.info.content.rentMeasure">-->
+                    <!--<span>面议</span>-->
+                <!--</dd>-->
+            </div>
+            <div ng-if="vm.info.content.fitIndustry != '' && vm.info.content.type == 2">
+                <dt style="margin: 0;">适合经营：</dt>
+                <dd>{{vm.info.content.fitIndustry}}</dd>
+            </div>
+            <div ng-if="vm.info.content.type==1">
+                    <dt style="margin: 0;"><span style="margin-right: 7px;">转</span><span style="margin-right: 7px;">让</span>费：</dt>
+                    <dd ng-if="vm.info.content.negotiable == 0 && vm.info.content.transferFee">
+                        {{vm.info.content.transferFee/1000000}}万元
+                    </dd>
+                    <dd ng-if="vm.info.content.negotiable == 1 || !vm.info.content.transferFee">
+                        <span>面议</span>
+                    </dd>
+            </div>
+            <div  ng-if="vm.info.content.type==1 || vm.info.content.type==0">
+                <dt style="margin: 0;"><span class="pr2em">行</span>业：</dt>
+                <dd ng-if="vm.info.content.industryId">{{vm.info.content.industryId | substr:0:2 | industryName}}－{{vm.info.content.industryId | industryName}}
+                    <span ng-if="vm.info.content.businessStatus">({{vm.info.content.businessStatus | shopStatus}}
+                    <span ng-if="vm.info.content.businessStatus">-</span>
+                    {{vm.info.content.emptyTransfer | emptyTransfer}})
+                </span>
+                </dd>
+
+            </div>
+            <!--<div>-->
+                <!--<dt>经营状态：</dt>-->
+                <!--<dd>{{vm.info.content.businessStatus | shopStatus}}-->
+                    <!--<span ng-if="vm.info.content.businessStatus">-</span>-->
+                    <!--{{vm.info.content.emptyTransfer | emptyTransfer}}-->
+                <!--</dd>-->
+            <!--</div>-->
+            <div class="empty"></div>
+
+            <div ng-if="vm.info.content.type">
+                <dt ng-if="vm.info.content.type == 1" style="margin: 0;"><span class="pr2em">店</span>名：</dt>
+                <dt ng-if="vm.info.content.type == 2" style="margin: 0;"><span class="pr2em">楼</span>盘：</dt>
+                <dd>{{vm.info.content.shopName}}</dd>
+            </div>
+            <div ng-if="vm.info.content.type">
+                <dt ng-if="vm.info.content.type == 1" style="margin: 0;">剩余合同期：</dt>
+                <dt ng-if="vm.info.content.type == 2" style="margin: 0;">合同期：</dt>
+                <dd>
+                    <span ng-if="vm.info.content.contractPeriod==1">6个月</span>
+                    <span ng-if="vm.info.content.contractPeriod>1">{{vm.info.content.contractPeriod}}月</span>
+                    <span ng-if="vm.info.content.contractPeriod==0">未知</span>
+                </dd>
+            </div>
+            <div ng-if="vm.info.content.facilities != ''">
+                <dt style="margin: 0;">物业配套：</dt>
+                <dd ><span ng-repeat="facilities in vm.info.content.facilities">{{facilities | facilitiesFilter}}<span ng-if="!$last">、</span></span></dd>
+            </div>
+            <div ng-if="vm.info.content.fitIndustry != '' && vm.info.content.type == 1">
+                <dt style="margin: 0;">适合经营：</dt>
+                <dd>{{vm.info.content.fitIndustry}}</dd>
+            </div>
+            <div ng-if="vm.info.content.districtId">
+                <dt style="margin: 0;"><span class="pr2em">地</span>址：</dt>
+                <dd>{{vm.info.content.districtId | substr:0:4 | cityName}}{{vm.info.content.districtId.toString().substr(0,6) | districtName}}{{vm.info.content.districtId | districtName}}{{vm.info.content.address}}</dd>
+            </div>
+            <!--<div ng-if="vm.info.content.districtId">-->
+                <!--<dt style="margin: 0;">所在区域：</dt>-->
+                <!--<dd><span>{{vm.info.content.districtId.toString().substr(0,4) | cityName}}</span><span ng-if="vm.info.content.districtId.toString().length > 6">{{vm.info.content.districtId.toString().substr(0,6) | districtName}}</span>{{vm.info.content.districtId | districtName}}</dd>-->
+            <!--</div>-->
+            <div ng-if="vm.info.content.informationSource">
+                <dt style="margin: 0;">信息来源：</dt>
+                <dd >{{vm.info.content.informationSource | informationSourceFilter}}</dd>
+            </div>
+        </div>
+    </dl>
+    <!--转店的结束-->
+
+    <!--找店的开始-->
+    <dl ng-if="vm.info.pluginId == 'xw:siting'" class="dl-horizontal xw-dl-horizontal">
+
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div ng-if="vm.info.creatorNickname">
+                <dt style="margin: 0">发布者：</dt>
+                <dd>{{vm.info.creatorNickname}}
+                    <span>【{{vm.info.userType | userTypeFilter}}】</span>
+                </dd>
+            </div>
+            <div class="clearfix" ng-if="vm.info.content.informationSource">
+                <dt style="margin: 0">信息来源：</dt>
+                <dd >{{vm.info.content.informationSource | leaseInformationSourceFilter}}</dd>
+            </div>
+            <div class="empty"></div>
+
+
+            <div class="clearfix" ng-if="vm.info.content.contact || vm.info.mobile || vm.info.content.otherContact">
+                <dt style="margin: 0">客户：</dt>
+                <dd>{{vm.info.contact}}、{{vm.info.mobile}}、{{vm.info.content.otherContact}}</span></dd>
+            </div>
+
+            <div class="clearfix" ng-if="vm.info.content.qqNumber">
+                <dt style="margin: 0">QQ：</dt>
+                <dd>{{vm.info.content.qqNumber}}</dd>
+            </div>
+
+            <div class="clearfix" ng-if="vm.info.content.wechatNumber">
+                <dt style="margin: 0">微信：</dt>
+                <dd>{{vm.info.content.wechatNumber}}</dd>
+            </div>
+            <div class="clearfix" ng-if="vm.info.content.nativePlace">
+                <dt style="margin: 0">籍贯：</dt>
+                <dd ><span>{{vm.info.content.nativePlace}}</span></dd>
+            </div>
+            <div class="empty"></div>
+
+            <div class="clearfix" ng-if="vm.info.content.industryType">
+                <dt style="margin: 0">经营类型：</dt>
+                <dd >{{vm.info.content.industryType | industryTypeFilter}}</dd>
+            </div>
+            <div class="clearfix" ng-if="vm.info.content.brandName">
+                <dt style="margin: 0">品牌名称：</dt>
+                <dd >{{vm.info.content.brandName}}</dd>
+            </div>
+            <div class="clearfix" ng-if="vm.info.content.type">
+                <dt style="margin: 0">首选类型：</dt>
+                <dd >{{vm.info.content.type | reqTypeFilter}}</dd>
+            </div>
+            <div class="empty"></div>
+
+            <div class="clearfix" ng-if="vm.info.content.minArea">
+                <dt style="margin: 0">期望面积：</dt>
+                <dd>{{vm.info.content.minArea}} - {{vm.info.content.maxArea}} 平米</dd>
+            </div>
+
+            <div class="clearfix" ng-if="vm.info.content.districtIds">
+                <dt style="margin: 0">期望区域：</dt>
+                <dd ><span ng-repeat="district in vm.info.content.districtIds"><span ng-if="district.toString().length != 4">{{district | districtName}}</span><span ng-if="district.toString().length == 4">{{district | cityName}}</span><span ng-if="!$last">、</span></span></dd>
+            </div>
+                <div class="clearfix" ng-if="vm.info.content.industryId">
+                    <dt style="margin: 0">求租行业：</dt>
+                    <dd>{{vm.info.content.industryId | industryName}}</dd>
+                </div>
+
+                <div class="clearfix">
+                    <dt style="margin: 0">期望租金：</dt>
+                    <dd ng-if="vm.info.content.maxRent>0">{{vm.info.content.minRent/100}} - {{vm.info.content.maxRent/100}}
+                        <span ng-if="vm.info.content.rentMeasure">{{vm.info.content.rentMeasure | rentMeasureFilter}}</span>
+                        <span ng-if="!vm.info.content.rentMeasure">元/月</span>
+                    </dd>
+                    <dd ng-if="vm.info.content.maxRent==0">面议</dd>
+                </div>
+                <div class="empty"></div>
+
+                <div class="clearfix" ng-if="vm.info.content.facilities != ''">
+                    <dt style="margin: 0">物业配套：</dt>
+                    <dd ><span ng-repeat="facilities in vm.info.content.facilities">{{facilities | facilitiesFilter}}<span ng-if="!$last">、</span></span></dd>
+                </div>
+
+                <div  class="clearfix">
+                    <dt style="margin: 0">最短租期：</dt>
+                    <dd>
+                        <span ng-if="vm.info.content.contractPeriod == 1">6个月</span>
+                        <span ng-if="vm.info.content.contractPeriod > 1">{{vm.info.content.contractPeriod}}个月</span>
+                        <span ng-if="vm.info.content.contractPeriod == 0">未知</span>
+                    </dd>
+                </div>
+
+                <div>
+                    <dt style="margin: 0">门宽要求：</dt>
+                    <dd ng-if="vm.info.content.doorWidth">{{vm.info.content.doorWidth/100}}米</dd>
+                    <dd ng-if="vm.info.content.doorWidth==0">未知</dd>
+                </div>
+
+        </div>
+
+    </dl>
+    <!--找店的结束-->
+
+    <!--消费的开始-->
+    <dl ng-if="vm.info.pluginId == 'xw:reservation'" class="dl-horizontal xw-dl-horizontal">
+        <div class="clearfix">
+            <dt>客户：</dt>
+            <dd>{{vm.info.contact}}</dd>
+        </div>
+        <div class="clearfix">
+            <dt>手机：</dt>
+            <dd>{{vm.info.mobile}}</dd>
+        </div>
+        <div class="clearfix">
+            <dt>店名：</dt>
+            <dd>{{vm.info.content.shopName}}</dd>
+        </div>
+        <div class="clearfix">
+            <dt>行业：</dt>
+            <dd>{{vm.info.content.industryId | industryName}}</dd>
+        </div>
+        <div class="clearfix">
+            <dt>地址：</dt>
+            <dd>{{vm.info.content.address}}</dd>
+        </div>
+    </dl>
+    <!--消费的结束-->
+    <!--招聘的开始-->
+    <dl ng-if="vm.info.pluginId == 'xw:recruitment'" class="dl-horizontal xw-dl-horizontal">
+        <div>
+            <dt>客户：</dt>
+            <dd>{{vm.info.contact}}</dd>
+        </div>
+
+        <div>
+            <dt>手机：</dt>
+            <dd>{{vm.info.mobile}}</dd>
+        </div>
+        <div>
+            <dt>商家：</dt>
+            <dd>{{vm.info.content.shopName}}</dd>
+        </div>
+        <div>
+            <dt>招聘职位：</dt>
+            <dd> <span ng-repeat="position in vm.info.content.positionIds">{{position | positionName}}<span ng-if="!$last">、</span></span></dd>
+        </div>
+        <div>
+            <dt>招聘人数：</dt>
+            <dd>{{vm.info.content.recruitNumber }}名</dd>
+        </div>
+        <div>
+            <dt>地址：</dt>
+            <dd>{{vm.info.content.address}}</dd>
+        </div>
+    </dl>
+    <!--招聘的结束-->
+</div>
+
+<div class="cle"></div>
+
+描述：
+<div class="line"></div>
+{{vm.info.description}}
+<div class="empty"></div>
+<div ng-if="vm.info.content.photos && vm.info.content.photos !=''">
+    <div>图片：</div>
+    <div class="line"></div>
+    <div ng-repeat="img in vm.info.content.photos" style="margin: 10px;">
+        <ul>
+            <li>
+                <a ng-href="{{img.url}}" target="_blank">
+                    <img ng-src="{{img.url+'?x-oss-process=image/resize,m_mfit,w_500'}}">
+                </a>
+                <!--<a href="photos/{{img.id}}" class="thumb"><img ng-src="{{img.url}}"></a>-->
+            </li>
+        </ul>
+    </div>
+</div>

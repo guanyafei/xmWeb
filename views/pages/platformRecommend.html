@@ -1,0 +1,85 @@
+<section class="">
+    <ol class="breadcrumb ">
+        <li>
+            {{vm.pluginId | pluginIdFilter}}
+            推荐平台
+        </li>
+    </ol>
+</section>
+
+<div>
+    <span ng-if="vm.recommendType == 'service'">
+    <label class="opportunity-control-label mb10">类型：</label>
+        <span class="pointer typeSelectItem" ng-class="{actived: vm.type == 1}" ng-click="vm.changeType(1)">平台推荐</span>
+        <span class="pointer typeSelectItem" ng-class="{actived: vm.type == 2}" ng-click="vm.changeType(2)">最新信息</span>
+        <span class="pointer typeSelectItem" ng-class="{actived: vm.type == 3}" ng-click="vm.changeType(3)">参考信息</span>
+        <br>
+    </span>
+    <form name="recSearchForm">
+    <label class="opportunity-control-label">关键字搜索：</label>
+        <input class="form-control input-md inlineBlock" ng-keypress="vm.enterSearch($even)" type="number" ng-maxlength="11" name="keyword" placeholder="手机号码" ng-model="vm.keyword">
+        <span class="ml15 btn btn-info" ng-click="vm.search()">搜索</span>
+        <span ng-if="vm.formWarning">
+            <span style="color:red">{{vm.warningContent}}</span>
+        </span>
+    </form>
+</div>
+<div>
+    <span ng-if="vm.type == 1">【给你匹配了<span class="font-red">{{vm.totalCount}}</span>条适合的信息】</span>
+    <span ng-if="vm.type == 2">【最新发布的<span class="font-red">{{vm.totalCount}}</span>条适合的信息】</span>
+    <span ng-if="vm.type == 3">【<span class="font-red">{{vm.totalCount}}</span>条待确认信息，供您参考】</span>
+</div>
+<div class="xw-table" style="width: 900px">
+    <div class="xw-table-head">
+        <span class="col-xs-8"><span ng-if="vm.pluginId == 'xw:transfer'">找店</span><span ng-if="vm.pluginId == 'xw:siting'">转店</span>资源</span>
+        <span class="col-xs-3">发布时间</span>
+        <span class="col-xs-1">操作</span>
+    </div>
+    <div class="xw-table-row" ng-repeat="resource in vm.resourceList">
+        <span class="col-xs-8">
+            <h5 class="mb10 f-l mr20"><a ng-click="vm.showDetail($index)">{{resource.title}}</a></h5><span ng-if="resource.recommended" class="label label-danger">已推荐</span>
+            <div class="cle"></div>
+            {{vm.slogan}}
+            <span ng-if="resource.area || resource.maxArea || resource.minArea">面积：{{resource.area}}<span ng-if="vm.pluginId == 'xw:transfer'">{{resource.minArea}} - {{resource.maxArea}}</span>平米<br></span>
+            <span ng-if="vm.recommendType == 'opp' && resource.industryId">行业：{{resource.industryId | substr:0:2 | industryName}}－{{resource.industryId | industryName}}<br></span>
+            <span ng-if="vm.recommendType == 'service'">租金：<span ng-if="vm.pluginId == 'xw:siting'">{{resource.rent/100}}</span><span ng-if="vm.pluginId == 'xw:transfer'">{{resource.minRent/100}} - {{resource.maxRent/100}}</span>元/月</span>
+        </span>
+		<span class="col-xs-3">
+            {{resource.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+        </span>
+		<span class="col-xs-1">
+            <span class="btn-xs btn-info pointer" ng-click="vm.showDetail($index)">查看</span>
+		</span>
+        <div class="cle"></div>
+        <div ng-if="resource.showDetail" class="xw-table-detail col-xs-12">
+                <div class="xw-table-detail-toolbar">
+                    <span ng-if="vm.recommendType == 'service'">
+                        <label class="opportunity-control-label">业务状态：</label>{{resource.detail.status | postStatus}}
+                        <label class="opportunity-control-label">有效状态：</label><span class="font-red">{{resource.detail.validity | validutyFilter}}</span>
+                    </span>
+                    <span class="glyphicon glyphicon-remove f-r pointer" style="font-size: 24px;" aria-hidden="true" ng-click="vm.hideDetail($index)"></span>
+                    <span class="f-r mr20">
+                        <button ng-if="vm.recommendType == 'service'" class="btn btn-info" ng-click="vm.confirmRecord(resource)">确认记录</button>
+                        <button ng-if="!resource.recommended" class="btn btn-info" ng-click="vm.recommend($index)">推荐</button>
+                        <button ng-if="resource.detail.opportunityId > 0" class="btn btn-info" ng-click="vm.accuseAdd(resource.detail.opportunityId)">举报信息</button>
+
+                    </span>
+                </div>
+                <div class="xw-table-detail-content">
+                    <div ng-include="'views/partial/recommendation/recommendationDetail.html'"></div>
+                </div>
+            </div>
+        <div class="cle"></div>
+		</div>
+</div>
+<div style="width: 900px">
+    <div class="col-xs-4 " style="line-height:34px;margin: 20px 0;">
+        总数{{vm.totalCount}}条 共{{numPages}}页 <span >每页{{vm.pageSize}}条</span>
+    </div>
+    <div class="col-xs-8">
+        <nav class="xw-pagination-container f-r">
+            <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages" total-items="vm.totalCount" items-per-page="vm.pageSize" ng-model="vm.currentPage" ng-change="vm.flipPage()"></uib-pagination>
+        </nav>
+    </div>
+</div>
+<div class="cle"></div>

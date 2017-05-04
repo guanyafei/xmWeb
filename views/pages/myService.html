@@ -1,0 +1,209 @@
+<section class="">
+    <ol class="breadcrumb ">
+        <li>我的服务</li>
+    </ol>
+</section>
+
+<div class="">
+    <div class="col-sm-12 clearfix xw-myService">
+        <form name="searchForm">
+            <ul>
+                <li class="clearfix toolbar-line form-group">
+                    <span class="mr10">
+                        <span>状态:</span>
+                        <select class="select-s" name="plugin" ng-model="vm.status"
+                                ng-init="vm.status = vm.statusSelect[1].value"
+                                ng-options="status.value as status.name for status in vm.statusSelect">
+                        </select>
+                    </span>
+
+                    <span class="mr10">
+                        <span>类型:</span><!--选择插件-->
+                        <select class="select-s" name="plugin" ng-model="vm.pluginId"
+                                ng-options="plginId.value as plginId.name for plginId in vm.pluginIdSelect">
+                        </select>
+                    </span>
+
+                    <!--选择行业-->
+                    <span class="mr10">
+                        <span>选择行业:</span>
+                        <select class="select-s" name="industry"  ng-model="vm.industryId"
+                                ng-change="vm.loadSmallIndustries(vm.industryId)"
+                                ng-options="industry.code as industry.name for industry in vm.industriesSelect">
+                            <option value="">全部</option>
+                        </select>
+                        <select class="select-s" name="smallIndustry" ng-model="vm.smallIndustryId"
+                                ng-options="smallIndustry.code as smallIndustry.name for smallIndustry in vm.smallIndustriesSelect">
+                            <option value="">全部</option>
+                        </select>
+                    </span>
+                    <span class="mr10">
+                        <label>
+                          <input type="checkbox" ng-model="vm.onlyHasRecommendation"> 需审核推荐
+                        </label>
+                    </span>
+                </li>
+
+                <li class="clearfix toolbar-line form-group">
+                    <!--选择区域-->
+                    <span class="mr10">
+                        <span>选择区域:</span>
+                        <select class="select-s" name="city" ng-model="vm.cityId"
+                                ng-init="vm.cityId = vm.cities[0].code"
+                                ng-change="vm.loadDistricts(vm.cityId)"
+                                ng-options="city.code as city.name for city in vm.cities">
+                        </select>
+                        <select class="select-s" name="district"  ng-model="vm.districtId"
+                                ng-init="vm.districtId = vm.districtsSelect[0].c"
+                                ng-change="vm.loadBusinessAreas(vm.districtId)"
+                                ng-options="district.code as district.name for district in vm.districtsSelect">
+                            <option value="">全部</option>
+                        </select>
+
+                        <select ng-if="vm.businessAreasSelect && vm.businessAreasSelect.length > 0" class="select-s" name="businessArea" ng-model="vm.businessAreaId"
+                                ng-options="businessArea.code as businessArea.name for businessArea in vm.businessAreasSelect">
+                            <option value="">全部</option>
+                        </select>
+                     </span>
+
+                    <!--排序-->
+                    <span class="mr10">
+                        <span>排序:</span>
+                        <select class="select-s" name="orderBy" ng-model="vm.orderBy"
+                                ng-options="orderBy.value as orderBy.name for orderBy in vm.orderBySelect">
+                        </select>
+                    </span>
+                </li>
+
+                <li class="clearfix toolbar-line">
+                    <span>关键字搜索:</span>
+                    <input class="input-md" ng-model="vm.mobile" mobile name="mobile" type="text" placeholder="输入商户号码">
+                    <button class="btn btn-info" ng-click="vm.getServingListNewBySearch(searchForm.$valid)">搜索</button>
+                </li>
+                <li>
+                    <div ng-show="vm.submitted">
+                        <span style="color:red" ng-show="searchForm.mobile.$error.mobile">电话格式不对</span>
+                        <span style="color:red" ng-show="searchForm.smallIndustry.$error.required">选择具体行业</span>
+                        <span style="color:red" ng-show="searchForm.district.$error.required">选择具体商圈</span>
+                        <span style="color:red" ng-show="searchForm.businessArea.$error.required">选择具体商圈</span>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+    <div class="clearfix"></div>
+    <hr>
+    <p>
+        温馨提示：<br>
+        1、服务已结束或已过期的不能添加服务备注、添加服务记录、推荐、刷新、修改。
+    </p>
+
+    <H1>{{vm.serviceList.mobile}}</H1>
+
+    <!--分页-->
+    <div ng-if="vm.totalCount > vm.pageSize" ng-include="'views/partial/pageFliper.html'"></div>
+
+    <div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 600px;">店铺</th>
+                <th style="width: 250px;">客户联系方式</th>
+                <th>客服状态</th>
+                <th>最近跟进</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="myService in vm.serviceList track by $index">
+                <tr>
+                    <td class="position-rel">
+                        <div class="inlineBlock"><span class="plugin-flag">{{myService.pluginId | pluginIdFilter}}</span></div>
+                        <div class="inlineBlock" >
+                            <div>
+                                <a ng-if="!(myService.pluginId == vm.recruitmentPluginId || myService.pluginId == vm.reservationPluginId)" class="f16" ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId})" target="_blank">
+                                    {{myService.title}}
+                                </a>
+                                <a ng-if="myService.pluginId == vm.recruitmentPluginId || myService.pluginId == vm.reservationPluginId" class="f16" ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId})" target="_blank">
+                                    {{myService.shopName}}
+                                </a>
+                                <a ng-if="myService.pluginId == vm.transferPluginId && myService.type == 1" class="f12" href="http://{{vm.cityLetter}}.pupuwang.com/syzr/details/{{myService.oppId}}"  target="_blank">官网详情</a>
+                                <a ng-if="myService.pluginId == vm.transferPluginId && myService.type == 2" class="f12" href="http://{{vm.cityLetter}}.pupuwang.com/spzs/details/{{myService.oppId}}"  target="_blank">官网详情</a>
+                                <a ng-if="myService.pluginId == vm.sitingPluginId" class="f12" href="http://{{vm.cityLetter}}.pupuwang.com/qzqg/details/{{myService.oppId}}" target="_blank">官网详情</a>
+                                <a ng-if="myService.pluginId == vm.recruitmentPluginId" class="f12" href="http://{{vm.cityLetter}}.pupuwang.com/job/details/{{myService.oppId}}"  target="_blank">官网详情</a>
+                                <a ng-if="myService.pluginId == vm.reservationPluginId" class="f12" href="http://{{vm.cityLetter}}.pupuwang.com/sh/details/{{myService.oppId}}"  target="_blank">官网详情</a>
+                            </div>
+                            <div ng-if="myService.pluginId == vm.transferPluginId">
+                                {{myService.area}}平米
+                                {{myService.rent/100}}{{myService.rentMeasure | rentMeasureFilter}}
+                            </div>
+                            <div  ng-if="myService.pluginId == vm.sitingPluginId">
+                                {{myService.minArea}}-{{myService.maxArea}}平米
+                                {{myService.minRent/100}}-{{myService.maxRent/100}} <span ng-if="myService.rentMeasure">{{myService.rentMeasure | rentMeasureFilter}}</span> <span ng-if="!myService.rentMeasure">元/月</span>
+                            </div>
+                            <div ng-if="myService.pluginId == vm.recruitmentPluginId || myService.pluginId == vm.reservationPluginId">{{myService.address}}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>姓名:<span>{{myService.nickname}}</span></div>
+                        <div>电话:<span>{{myService.mobile}}</span></div>
+                    </td>
+                    <td>
+                        <span>
+                            <span ng-if="myService.serviceStatus == 0" class="text-danger">服务中</span>
+                            <span ng-if="myService.serviceStatus == 1">申请放弃</span>
+                            <span ng-if="myService.serviceStatus == 2">已放弃</span>
+                            <span ng-if="myService.serviceStatus == 3">已结束</span>
+                        </span>
+                    </td>
+                    <td>
+                        <div>
+                            <div>
+                                <span class="text-danger" ng-if="myService.lastTime > 5"> {{ myService.lastTime}}天未跟进</span>
+                                <span ng-if="myService.lastTime <= 5 && myService.lastTime != 0"> {{ myService.lastTime}}天未跟进</span>
+                                <span ng-if="myService.lastTime == 0"> 今天已跟进</span>
+                            </div>
+                            <div class="text-disable">
+                                {{myService.last_record_time | date: 'yyyy-MM-dd HH:mm:ss'}}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr style="background-color: #f5f5f5;">
+                    <td colspan="4">
+                        <span style="font-weight: 700">操作:</span>
+                        <div style="width: 10px;display: inline-block"></div>
+                        <a ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId})" target="_blank">查看</a>
+                        <a ng-if="(myService.serviceStatus != 3 && myService.status == 1) && (myService.pluginId == vm.transferPluginId || myService.pluginId == vm.sitingPluginId)" ng-click="vm.refresh(myService.requirementId)">刷新</a>
+                        <b><a ng-if="(myService.serviceStatus != 3 && myService.status == 1) && (myService.pluginId == vm.transferPluginId || myService.pluginId == vm.sitingPluginId)" ui-sref="index.main.recommendation({serviceId:myService.id, params:myService.requirementId, pluginId:myService.pluginId})" target="_blank" >推荐</a></b>
+                        <!--<a ng-if="(myService.serviceStatus != 3 && myService.status == 1) && (myService.pluginId == vm.reservationPluginId)" ui-sref="index.main.recommendation({params:myService.shopId, pluginId:myService.pluginId})" target="_blank">推荐</a>-->
+                        <a ng-if="(myService.serviceStatus != 3 && myService.status == 1) && (myService.pluginId == vm.transferPluginId || myService.pluginId == vm.sitingPluginId)" ui-sref="index.main.requirementUpdate({requirementId:myService.requirementId, shopId:myService.shopId})" target="_blank">修改</a>
+                        <div style="width: 10px;display: inline-block"></div>
+                        <a ui-sref="index.main.serviceDetail({serviceId:myService.id, active:'1',cssId:myService.cssId})" target="_blank">服务备注</a>
+                        <b><a ui-sref="index.main.serviceDetail({serviceId:myService.id, active:'2',cssId:myService.cssId})" target="_blank">服务记录</a></b>
+                        <a ng-if="myService.status == 1 && myService.serviceStatus == 0" ng-click="vm.abort(myService.cssId)">放弃服务</a>
+                        <a ng-if="myService.status == 1 && myService.serviceStatus == 1" ng-click="vm.cancelAbort(myService.cssId)">取消放弃</a>
+                        <a ng-if="(myService.status == 2 || myService.status == 3 ) && myService.isExistExam == 0" ng-click="vm.caseRemark(myService.id, myService.isExistExam, myService.pluginId)">案例备注</a>
+                        <a ng-if="(myService.status == 2 || myService.status == 3 ) && myService.isExistExam == 1" ng-click="vm.caseRemark(myService.id, myService.isExistExam, myService.pluginId)">修改案例备注</a>
+                        <div style="width: 10px;display: inline-block"></div>
+                        <a ui-sref="index.main.viewMyRecommend({serviceId:myService.id, check:true})" ng-if="(myService.pluginId == vm.transferPluginId || myService.pluginId == vm.sitingPluginId) && (myService.status == 1 )&& (myService.serviceStatus == 0 || myService.serviceStatus == 1)">审核推荐</a>
+                        <a ui-sref="index.main.viewMyRecommend({serviceId:myService.id, check:false})" ng-if="(myService.pluginId == vm.transferPluginId || myService.pluginId == vm.sitingPluginId) &&( myService.status == 1 )&& (myService.serviceStatus == 0 || myService.serviceStatus == 1)">查看推荐</a>
+                        <div style="width: 10px;display: inline-block"></div>
+                        <a ng-if="(myService.pluginId == vm.transferPluginId || myService.pluginId == vm.sitingPluginId) && myService.status == 1"
+                           ui-sref="index.main.platformRecommend({pluginId:myService.pluginId,serviceId:myService.id})">平台推荐
+                        </a>
+
+                    </td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr ng-if="vm.serviceList.length == 0 && vm.complete == true">
+                    <td colspan="5"> 暂无服务商户，请快去签约商户或查询其他类型服务！</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--分页-->
+    <div ng-include="'views/partial/pageFliper.html'"></div>
+</div>

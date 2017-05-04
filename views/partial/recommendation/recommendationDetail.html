@@ -1,0 +1,93 @@
+<!-- 找店资源-->
+<div ng-if="vm.pluginId == 'xw:transfer'">
+    <div>
+        <label class="opportunity-control-label">编号：</label>{{resource.detail.opportunityId}}{{resource.detail.id}}
+    </div>
+    <div>
+        <label class="opportunity-control-label">联系人：</label>{{resource.detail.contact}}
+    </div>
+    <div>
+        <label class="opportunity-control-label">电话：</label>{{resource.detail.mobile}}
+    </div>
+    <div ng-if="recommendation.detail.content.industryType">
+        <label class="opportunity-control-label">经营类型：</label>{{resource.detail.content.industryType | industryTypeFilter}}
+    </div>
+    <div ng-if="resource.detail.content.brandName">
+        <label class="opportunity-control-label">品牌名称：</label>{{resource.detail.content.brandName}}
+    </div>
+    <div ng-if="resource.detail.content.type != undefined">
+    <label class="opportunity-control-label">首选类型：</label>{{resource.detail.content.type | reqTypeFilter}}
+    </div>
+    <label class="opportunity-control-label">求租行业：</label>{{resource.detail.content.industryId | substr:0:2 | industryName}}－{{resource.detail.content.industryId | industryName}}<br>
+    <label class="opportunity-control-label">期望面积：</label>{{resource.detail.content.minArea}}-{{resource.detail.content.maxArea}}平米<br>
+    <label class="opportunity-control-label">期望租金：</label>
+        <span ng-if="!(resource.detail.content.minRent == 0 && resource.detail.content.maxRent == 0)">
+            {{resource.detail.content.minRent/100}}-{{resource.detail.content.maxRent/100}}
+            <span ng-if="vm.info.content.rentMeasure != undefined">{{vm.info.content.rentMeasure | rentMeasureFilter}}</span>
+            <span ng-if="vm.info.content.rentMeasure == undefined">元/月</span>
+        </span>
+        <span ng-if="resource.detail.content.minRent == 0 && resource.detail.content.maxRent == 0">面议</span>
+
+    <br>
+
+    <div ng-if="resource.detail.content.doorWidth">
+        <label class="opportunity-control-label">门宽要求：</label> <span ng-if="resource.detail.content.doorWidth">{{resource.detail.content.doorWidth/100}}</span>米
+    </div>
+    <label class="opportunity-control-label">优先区域：</label>
+        <span ng-repeat="district in resource.detail.content.districtIds">
+            <span ng-if="district.toString().length != 4">{{district | districtName}}</span>
+            <span ng-if="district.toString().length == 4">{{district | cityName}}</span>
+            <span ng-if="!$last">、</span>
+        </span><br>
+    <div ng-if="resource.detail.content.facilities && resource.detail.content.facilities.length != 0">
+        <label class="opportunity-control-label">物业配套：</label>
+        <span ng-repeat="facilitie in resource.detail.content.facilities">{{facilitie | facilitiesFilter}}<span ng-if="!$last">、</span></span>
+    </div>
+    <div ng-if="resource.detail.description">
+        <label class="opportunity-control-label">详细描述：</label>{{resource.detail.description}}
+    </div>
+</div>
+<!-- 转店资源-->
+<div ng-if="vm.pluginId == 'xw:siting'">
+    <label class="opportunity-control-label">编号：</label>{{resource.detail.opportunityId}}{{resource.detail.id}}<br>
+    <label class="opportunity-control-label">联系人：</label>{{resource.detail.contact}}<br>
+    <label class="opportunity-control-label">电话：</label>{{resource.detail.mobile}}<br>
+    <label class="opportunity-control-label">类型：</label>{{resource.detail.content.type | transferType}}<br>
+    <div ng-if="resource.detail.content.type == 1">
+        <label class="opportunity-control-label">店名：</label>{{resource.detail.content.shopName}}
+     </div>
+    <div ng-if="resource.detail.content.type == 2">
+        <label class="opportunity-control-label">楼盘：</label>{{resource.detail.content.shopName}}
+    </div>
+    <div ng-if="resource.detail.content.type == 1">
+        <label class="opportunity-control-label">行业业态：</label> <span>{{resource.detail.content.industryId | substr:0:2 | industryName}}－{{resource.detail.content.industryId | industryName}}</span>
+    </div>
+    <div ng-if="resource.detail.content.transferFee">
+        <label class="opportunity-control-label">转让费：</label>{{resource.detail.content.transferFee/1000000}}万元
+    </div>
+    <div ng-if="resource.detail.content.cost">
+        <label class="opportunity-control-label">转让费：</label>{{resource.detail.content.cost/1000000}}万元
+    </div>
+    <div ng-if="resource.detail.content.type == 1">
+        <label class="opportunity-control-label">店铺状态：</label> <span>{{resource.detail.content.businessStatus | shopStatus}}-{{resource.detail.content.emptyTransfer | emptyTransfer}}空转</span>
+    </div>
+    <div ng-if="resource.detail.content.contractPeriod != undefined">
+        <label class="opportunity-control-label">剩余合同期：</label>{{resource.detail.content.contractPeriod | contractPeriodFilter}}
+    </div>
+    <div ng-if="resource.detail.content.facilities && resource.detail.content.facilities.length != 0">
+    <label class="opportunity-control-label">物业配套：</label><span
+        ng-repeat="facilitie in resource.detail.content.facilities">{{facilitie | facilitiesFilter}}<span ng-if="!$last">、</span></span>
+    </div>
+    <label class="opportunity-control-label">所在区域：</label>{{resource.detail.cityId | cityName}}{{resource.detail.content.districtId | districtName}}<br>
+    <label class="opportunity-control-label">店铺地址：</label>{{resource.detail.content.districtId | substr:0:4 | cityName}}{{resource.detail.content.districtId | substr:0:6 | districtName}}{{resource.detail.content.districtId | districtName}}{{resource.detail.content.address}}<br>
+    <div ng-if="resource.detail.content.suitableIndustryIds && resource.detail.content.suitableIndustryIds.length != 0">
+        <label class="opportunity-control-label">适合经营：</label>
+        <span ng-repeat="industry in resource.detail.content.suitableIndustryIds">
+            {{industry | industryName}}
+            <span ng-if="!$last">、</span>
+        </span>
+    </div>
+    <div ng-if="resource.detail.description">
+        <label class="opportunity-control-label">详细描述：</label>{{resource.detail.description}}
+    </div>
+</div>

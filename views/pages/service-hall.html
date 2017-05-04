@@ -1,0 +1,166 @@
+<section>
+	<ol class="breadcrumb ">
+		<li>服务大厅</li>
+	</ol>
+</section>
+
+<div class="" ng-show="vm.isIdentify">
+    <div class="row">
+        <div class="col-sm-12 clearfix xw-service-hall">
+            <form name="searchForm">
+                <ul>
+                    <li class="clearfix toolbar-line form-group">
+                        <span class="mr10">
+                            <span>类型:</span>
+                            <select class="select-s" name="plugin" ng-model="vm.pluginId" ng-options="plginId.value as plginId.name for plginId in vm.pluginIdSelect"></select>
+                        </span>
+
+                        <!--选择行业-->
+                        <span class="mr10">
+                            <span>选择行业:</span>
+                            <select class="select-s" name="industry"  ng-model="vm.industryId"
+                                    ng-change="vm.loadSmallIndustries(vm.industryId)"
+                                    ng-options="industry.code as industry.name for industry in vm.industriesSelect">
+                                <option value="">全部</option>
+                            </select>
+                            <select class="select-s" name="smallIndustry" ng-model="vm.smallIndustryId"
+                                    ng-options="smallIndustry.code as smallIndustry.name for smallIndustry in vm.smallIndustriesSelect">
+                                <option value="">全部</option>
+                            </select>
+                        </span>
+                    </li>
+
+                    <li class="clearfix toolbar-line form-group">
+                        <!--选择区域-->
+                        <span class="mr10">
+                            <span>选择区域:</span>
+                            <select class="select-s" name="district"  ng-model="vm.districtId"
+                                    ng-change="vm.loadBusinessAreas(vm.districtId)"
+                                    ng-options="district.code as district.name for district in vm.districtsSelect">
+                                 <option value="">全部</option>
+                            </select>
+
+                            <select ng-if="vm.businessAreasSelect && vm.businessAreasSelect.length > 0" class="select-s" name="businessArea" ng-model="vm.businessAreaId"
+                                    ng-options="businessArea.code as businessArea.name for businessArea in vm.businessAreasSelect">
+                                <option value="">全部</option>
+                            </select>
+                         </span>
+
+                        <!--排序-->
+                        <span class="mr10">
+                            <span>排序:</span>
+                            <select class="select-s" name="orderBy" ng-model="vm.orderBy"
+                                    ng-init="vm.orderBy = vm.orderBySelect[0].value"
+                                    ng-options="orderBy.value as orderBy.name for orderBy in vm.orderBySelect">
+                            </select>
+                        </span>
+
+                        <span>
+                            <button ng-click="vm.serviceHallSearch('query')" class="btn btn-info">查询</button>
+                        </span>
+                    </li>
+
+                    <li class="clearfix toolbar-line">
+                        <span>关键字搜索:</span>
+                        <input class="input-md" ng-model="vm.keywords" type="text" placeholder="关键字搜索">
+                        <button class="btn btn-info" ng-click="vm.serviceHallSearch('search')">搜索</button>
+                    </li>
+                    <li>
+                        <div ng-show="vm.submitted">
+                            <span style="color:red" ng-show="searchForm.smallIndustry.$error.required">选择具体行业</span>
+                            <span style="color:red" ng-show="searchForm.district.$error.required">选择具体商圈</span>
+                            <span style="color:red" ng-show="searchForm.businessArea.$error.required">选择具体商圈</span>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+    <hr>
+
+    <div ng-if="vm.totalCount > vm.pageSize" class="row" ng-include="'views/partial/pageFliper.html'"></div>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th style="width: 80px;">类型</th>
+                <th style="width: 500px;">客户需求</th>
+                <th style="width: 200px;">客户联系方式</th>
+                <th style="width: 180px;">签约时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="myService in vm.serviceList track by $index">
+                <!-- 类型 -->
+                <td>
+                    <div class="text-info">{{myService.pluginId | pluginIdFilter}}</div>
+                </td>
+                <!-- 客户需求 -->
+                <td>
+                    <!-- 需求标题 、 面积、租金 -->
+                    <div class="position-rel">
+                        <div>
+                            <div>
+                                <a ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId,serviceStatus:myService.serviceStatus})" target="_blank">{{myService.title}}</a>
+                            </div>
+                            <div >{{myService.overview}}</div>
+
+                        </div>
+
+                        <span class="service-new" ng-if="myService.isNew">新</span>
+                        <!-- 转店 -->
+                        <!--<div ng-if="myService.pluginId==='xw:transfer'">-->
+                            <!--<div>-->
+                                <!--<a ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId,serviceStatus:myService.serviceStatus})" target="_blank">{{myService.overview}}</a>-->
+                            <!--</div>-->
+                            <!--<div >{{myService.area}}平米&nbsp;&nbsp;&nbsp;&nbsp;{{myService.rent/100}}元/月</div>-->
+
+                        <!--</div>-->
+                        <!--&lt;!&ndash; 找店 &ndash;&gt;-->
+                        <!--<div ng-if="myService.pluginId==='xw:siting'">-->
+                            <!--<div><a ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId,serviceStatus:myService.serviceStatus})" target="_blank">{{myService.overview}}</a></div>-->
+                            <!--<div>{{myService.minArea}}-{{myService.maxArea}}平米&nbsp;&nbsp;&nbsp;&nbsp;{{myService.minRent}}-{{myService.maxRent}}元/月</div>-->
+                        <!--</div>-->
+                        <!--&lt;!&ndash; 招聘、消费 &ndash;&gt;-->
+                        <!--<div ng-if="myService.pluginId==='xw:recruitment' || myService.pluginId==='xw:reservation'">-->
+                            <!--<div><a ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId,serviceStatus:myService.serviceStatus})" target="_blank">{{myService.overview}}</a></div>-->
+                            <!--<div>{{myService.address}}</div>-->
+                        <!--</div>-->
+
+                    </div>
+                </td>
+                <!-- 客户联系方式 -->
+                <td>
+                    <div>姓名:{{myService.nickname}}</div>
+                    <div>电话:{{myService.telephone}}</div>
+                </td>
+                <!-- 签约时间 -->
+                <td>
+                    <div>{{myService.startDate | date:'yyyy-MM-dd'}}</div>
+                </td>
+                <!-- 操作 -->
+                <td>
+                    <a ng-click="vm.take(myService)">领取</a>&nbsp;
+                    <!--<a ui-sref="index.main.serviceDetail({serviceId:myService.id,active:0,cssId:myService.cssId})" target="_blank">查看详情</a>-->
+                    <a ui-sref="index.main.serviceDetail({serviceId:myService.id, active:'1',cssId:myService.cssId})" target="_blank">添加服务备注</a>
+                    <a ui-sref="index.main.serviceDetail({serviceId:myService.id, active:'2',cssId:myService.cssId})" target="_blank">服务记录</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!--底部分页-->
+    <div ng-include="'views/partial/pageFliper.html'"></div>
+</div>
+
+<div ng-if="vm.showWarning" class="alert alert-danger clearfix" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    需要通过了身份认证的，才可以查看服务大厅。
+</div>
+
+
+

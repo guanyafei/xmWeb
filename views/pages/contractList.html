@@ -1,0 +1,25 @@
+<section >
+    <ol class="breadcrumb ">
+        <li>通讯录</li>
+    </ol>
+</section>
+
+<div >
+    <div ng-if="vm.totalCount > vm.pageSize" ng-include="'views/partial/pageFliper.html'"></div>
+    <div class="cle"></div>
+    <div class="media borrad" >
+        <table class="table table-bordered" style="width: 50%;">
+            <tr>
+                <th style="text-align: center">姓名</th>
+                <th  style="text-align: center">电话</th>
+                <th style="text-align: center">员工身份</th>
+            </tr>
+            <tr ng-repeat="contract in vm.contracts track by contract.id ">
+                <td>{{contract.name}}</td>
+                <td>{{contract.mobile}}</td>
+                <td>{{contract.userType | userTypeFilter}}</td>
+            </tr>
+        </table>
+    </div>
+    <div ng-include="'views/partial/pageFliper.html'"></div>
+</div>

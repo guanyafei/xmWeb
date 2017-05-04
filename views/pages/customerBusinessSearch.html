@@ -1,0 +1,10 @@
+
+<div ng-if="vm.isIdentify">
+    <iframe ng-src="{{vm.currentProjectUrl}}" frameborder="0" style="width: 100%;height: 500px"></iframe>
+</div>
+
+<div ng-if="vm.showWarning" class="alert alert-danger clearfix" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    需要通过了身份认证的，才可以查看用户业务查询页面。
+</div>

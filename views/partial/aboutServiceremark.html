@@ -1,0 +1,33 @@
+<div class="mt20">
+    <h4>服务记录是商户可以查看到的服务备注</h4>
+    <ul class="mt20">
+        <li class="remark-list" ng-repeat="remark in vm.serviceRemark">
+            <img class="list-avatar" ng-if="!remark.avatarUrl" ng-src="static/img/xw_ic_avatar_default.png" alt="">
+            <img class="list-avatar" ng-if="remark.avatarUrl" ng-src="{{remark.avatarUrl  + '?x-oss-process=image/resize,m_mfit,h_200,w_200'}}" alt="">
+            <div class="list-info">
+                <div class="name" >{{remark.nickname}}</div>
+                <div class="time">{{remark.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
+            </div>
+            <div class="list-content col-xs-6 col-md-7 col-lg-7" >
+                {{remark.text}}
+            </div>
+            <div class="col-xs-2 col-md-2 col-lg-2">
+                <a ng-if="vm.userId == remark.userId" href="javascript:void(0)" data-toggle="modal" data-target="#promptModal" ng-click="vm.promptTitle ='确认删除'; vm.promptContent='删除不能恢复，确定删除？';vm.currentRemarkId=remark.id;vm.tabType='remark'" >删除</a>
+            </div>
+        </li>
+    </ul>
+</div>
+<!--分页-->
+<div class="row">
+    <div class="col-lg-4 " style="line-height:34px;margin: 20px 0;">
+        总数{{vm.totalRemarkCount}}条 共{{numPages}}页
+    </div>
+    <div class="col-lg-2" style="line-height:34px;text-align: right;margin: 20px 0;">
+        <span >每页{{vm.pageSize}}条</span>
+    </div>
+    <div class="col-lg-6 col-sm-6 col-md-7">
+        <nav class="xw-pagination-container">
+            <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages" total-items="vm.totalRemarkCount" items-per-page="vm.pageSize" ng-model="vm.remarkCurrentPage" ng-change="vm.getServiceRemarklist()"></uib-pagination>
+        </nav>
+    </div>
+</div>

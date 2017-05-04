@@ -1,0 +1,77 @@
+<div class="tip text-info">
+    温馨提示：领取服务开始，填写服务记录的时间间隔不能超过５天，否则其他人可以领取该服务<br>
+    服务已结束、已过期的不能添加服务记录
+</div>
+<div ng-hide="vm.serviceStatus == 3 || vm.status != 1 || vm.userType == 0 || vm.userType == 2 || vm.userType == 3">
+    <form name="historyForm">
+        <textarea class="form-control history-content" ng-model="vm.historyContent" placeholder="请输入备服务记录内容" name="historyContent" id="" cols="30" rows="3" required maxlength="300">
+
+        </textarea>
+        <div ng-if="vm.historySubmited">
+            <div class="text-danger" ng-if="historyForm.historyContent.$error.required">服务记录必填</div>
+            <div class="text-danger" ng-if="historyForm.historyContent.$error.maxlength">服务记录不能超过300字符</div>
+        </div>
+    </form>
+
+    <div class="radio">
+        <div class="hidden"><input type="radio" name="optionsRadios" id="optionsRadios1" value="option1"></div>
+        <span class="text-danger">（服务记录客户可见，请注意服务记录用词）</span>
+    </div>
+
+    <button class="btn btn-info" ng-click="vm.addServiceHistory(historyForm.$valid)" ng-disabled="vm.serviceStatus == 3">提交服务记录</button>
+</div>
+
+<div class="mt20">
+    <h5>服务记录（服务记录商户可以查看到）</h5>
+    <hr>
+    <div class="row media_relation" ng-repeat="serviceHistory in vm.serviceHistory" style="border-bottom: 1px solid #f2f2f2">
+        <div class="media-middle relation_top">
+            <img class="list-avatar" ng-if="!remark.avatarUrl" ng-src="static/img/xw_ic_avatar_default.png" alt="" style="width: 36px ; height: 36px; float: left">
+            <img class="list-avatar" ng-if="remark.avatarUrl" ng-src="{{serviceHistory.avatarUrl + '?x-oss-process=image/resize,m_mfit,h_200,w_200'}}" alt="" style="width: 36px ; height: 36px; float: left">
+        </div>
+        <div class="media-middle col-sm-2 relation_top">
+            <li class="text-left">
+                <span style="padding-right: 20px">{{serviceHistory.nickname}}</span> <br>
+                <span>{{serviceHistory.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+            </li>
+        </div>
+        <div class="text-left col-xs-5 col-md-5 col-lg-5 relation_top">{{serviceHistory.content}}</div>
+        <div class="col-xs-1 col-md-1 col-lg-1">
+            <a ng-if="vm.userId == serviceHistory.userId" data-toggle="modal" data-target="#promptModal" ng-click="vm.promptTitle ='确认删除'; vm.promptContent='删除不能恢复，确定删除？';vm.currentRemarkId=serviceHistory.id; vm.tabType='history'">删除</a>
+        </div>
+    </div>
+    <!--<ul class="mt20">-->
+    <!--<li class="history-list" ng-repeat="serviceHistory in vm.serviceHistory">-->
+    <!--<img class="list-avatar" ng-if="!remark.avatarUrl" ng-src="static/img/xw_ic_avatar_default.png" alt="">-->
+    <!--<img class="list-avatar" ng-if="remark.avatarUrl" ng-src="{{serviceHistory.avatarUrl + '?x-oss-process=image/resize,m_mfit,h_200,w_200'}}" alt="">-->
+    <!--<span class="list-info">-->
+    <!--<div class="name">{{serviceHistory.nickname}}</div>-->
+    <!--<div class="time">{{serviceHistory.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}</div>-->
+    <!--</span>-->
+    <!--<span class="col-xs-5 col-md-6 col-lg-6">-->
+    <!--{{serviceHistory.content}}-->
+    <!--</span>-->
+    <!--<div class="col-xs-2 col-md-2 col-lg-2">-->
+    <!--<a ng-if="vm.userId == serviceHistory.userId" data-toggle="modal" data-target="#promptModal" ng-click="vm.promptTitle ='确认删除'; vm.promptContent='删除不能恢复，确定删除？';vm.currentRemarkId=serviceHistory.id; vm.tabType='history'">删除</a>-->
+    <!--</div>-->
+    <!--</li>-->
+    <!--</ul>-->
+</div>
+
+<!--分页-->
+<div class="row">
+    <div class="col-lg-4 " style="line-height:34px;margin: 20px 0;">
+        总数{{vm.totalHistoryCount}}条 共{{numPages}}页
+    </div>
+    <div class="col-lg-2" style="line-height:34px;text-align: right;margin: 20px 0;">
+        <span >每页{{vm.pageSize}}条</span>
+    </div>
+    <div class="col-lg-6 col-sm-6 col-md-7">
+        <nav class="xw-pagination-container">
+            <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages" total-items="vm.totalHistoryCount" items-per-page="vm.pageSize" ng-model="vm.historyCurrentPage" ng-change="vm.pageGetServiceHistoryList()"></uib-pagination>
+        </nav>
+    </div>
+</div>
+
+
+

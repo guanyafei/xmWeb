@@ -1,0 +1,354 @@
+<div class="det">
+    <div class="divline mb10"><li><h4 class="col-md-2 col-sm-2">最新案例</h4></li></div>
+    <form name="exampleForm"  action="" role="form" class="form-horizontal form-inline" style="margin-bottom: 20px;margin-left: 20px;" ng-if="vm.pluginId=='xw:siting' || vm.pluginId=='xw:transfer'">
+        <div class="form-group">
+            <div>
+                <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'">经营行业:</label>
+                <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'">适合行业:</label>
+                <select class=" form-control" title="category"
+                        ng-model="vm.industryId"
+                        ng-change="vm.loadSmallIndustries(vm.industryId)"
+                        ng-options="industry.code as industry.name for industry in vm.industry">
+                    <option value="">行业</option>
+                </select>
+                <select class="form-control" title="category"
+                        ng-model="vm.smallIndustryId"
+                        ng-options="industry.code as industry.name for industry in vm.smallIndustry">
+                    <option value="">小行业</option>
+                </select>
+                <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'">期望区域:</label>
+                <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'">区域:</label>
+
+                <select class="form-control" title="category"
+                        ng-model="vm.districtId"
+                        ng-options="district.code as district.name for district in vm.district"
+                        ng-change="vm.loadBusinessAreas(vm.districtId)">
+                    <option value="">选择区域</option>
+                </select>
+                <select class="form-control" title="category"
+                        ng-model="vm.businessAreaId"
+                        ng-options="businessArea.code as businessArea.name for businessArea in vm.businessArea">
+                    <option value="">选择商圈</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'">期望面积:</label>
+                <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'">面积:</label>
+                <input name="minArea" class="form-control" type="number" ng-model="vm.minArea" placeholder="最小面积" ng-pattern="/^(([0-9]{1,6})|([0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> -
+                <input name="maxArea" class="form-control" type="number" ng-model="vm.maxArea" placeholder="最大面积" ng-pattern="/^(([0-9]{1,6})|([0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> ㎡
+                <!--<label class="opportunity-control-label">录入账号：</label>
+                <input class="form-control" type="text" placeholder="输入账号">-->
+
+                <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'" >期望租金:</label>
+                <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'" >租金:</label>
+                <input name="minRent" class="form-control" type="text" ng-model="vm.minRent" placeholder="最小租金" ng-pattern="/^(([0-9]{1,6})|([0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> -
+                <input name="maxRent" class="form-control" type="number" ng-model="vm.maxRent" placeholder="最大租金"  ng-pattern="/^(([0-9]{1,6})|([0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> 元/月
+
+                <label  class="opportunity-control-label">排序:</label>
+
+                    <select name="area" id="area"  class="form-control" ng-model="vm.orderby" ng-options="orderby.value as orderby.name for orderby in vm.orderbySelected">
+                    </select>
+                    <input  type="button" class="btn btn-info"  value="查询" ng-click="vm.queryExample(exampleForm.$valid)">
+
+
+
+            <div style="position: relative" ng-if="(!exampleForm.$valid) || (vm.minRent && (vm.maxRent==''||vm.maxRent==null)) || (vm.minArea && (vm.maxArea ==''||vm.maxArea==null)) || (vm.maxRent < vm.minRent) || (vm.maxArea < vm.minArea)">
+                <p style="color:red;position: absolute;left: 560px" ng-if="exampleForm.minRent.$error.pattern">最小租金为6位正整数+2位小数</p>
+                <p style="color:red;position: absolute;left: 780px" ng-if="exampleForm.maxRent.$error.pattern">最大租金为6位正整数+2位小数</p>
+
+                <p style="color:red;position: absolute;left: 80px"  ng-if="exampleForm.minArea.$error.pattern">最小面积为6位正整数+2位小数</p>
+                <p style="color:red;position: absolute;left: 280px" ng-if="exampleForm.maxArea.$error.pattern">最大面积为6位正整数+2位小数</p>
+
+                <p style="color:red;position: absolute;left: 560px"  ng-if="exampleForm.$valid && vm.maxRent < vm.minRent && vm.maxRent && vm.minRent">最大租金不能小于最小租金</p>
+                <p style="color:red;position: absolute;left: 80px" ng-if="exampleForm.$valid && vm.maxArea < vm.minArea && vm.maxArea && vm.minArea">最大面积不能小于最小面积</p>
+
+                <p style="color:red;position: absolute;left: 560px" ng-if="exampleForm.$valid && vm.minRent && (vm.maxRent==''|| vm.maxRent==null)">如果填写了最小租金，则填最大租金，也可只填写最大租金</p>
+                <p style="color:red;position: absolute;left: 80px" ng-if="exampleForm.$valid && vm.minArea && (vm.maxArea ==''|| vm.maxArea==null)">如果填写了最小面积，则填最大面积，也可只填写最大面积</p>
+            </div>
+            </div>
+
+
+            <div style="margin-top: 20px">
+            <label class="opportunity-control-label">关键字:</label>
+            <input  type="text" class="input-md" placeholder="标题/地址" ng-model="vm.key"
+                  >
+            <label class="opportunity-control-label">号码:</label>
+            <input name="otherphonenum" ng-maxlength="11" ng-minlength="11"  type="number" class="input-md" placeholder="商户手机/其他号码" ng-model="vm.number"
+                   >
+            <label class="opportunity-control-label">信息编号:</label>
+            <input name="infonumber"  type="number" class="input-md" placeholder="信息编号" ng-pattern="/^([0-9]{1,9})$/"  ng-model="vm.opportunityId"  ng-keydown="vm.eKey($event)">
+            <input type="button" class="btn btn-info" value="搜索" ng-click="vm.searchExample(exampleForm.$valid)">
+            </div>
+            <div style="position: relative" ng-if="(!exampleForm.$valid)" >
+                <p  style="color:red;position: absolute;left: 620px" ng-if="exampleForm.infonumber.$error.pattern">编号为1-9位整数</p>
+                <p style="color:red;position: absolute;left: 620px" ng-if="vm.e_num==true">此处e为字母，不能输入字母</p>
+                <p style="color:red;position: absolute;left: 340px" ng-if="exampleForm.otherphonenum.$error.minlength">手机号码为11位整数</p>
+                <p style="color:red;position: absolute;left: 340px" ng-if="exampleForm.otherphonenum.$error.maxlength">手机号码为11位整数</p>
+            </div>
+        </div>
+    </form>
+
+
+    <div ng-if="vm.pluginId=='xw:siting' || vm.pluginId=='xw:transfer'">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 110px;">锦旗合影</th>
+                <th style="width: 170px;">案例信息</th>
+                <th style="width: 170px;">客户评价</th>
+                <th style="width: 170px;">分类|星级</th>
+                <th style="width: 100px;">推荐</th>
+                <th style="width: 100px;">查看</th>
+
+            </tr>
+            </thead>
+            <tbody ng-repeat="example in vm.exampleList">
+            <tr >
+                <td>
+                   <img ng-if="example.photo" ng-src={{example.photo+"?x-oss-process=image/resize,m_mfit,h_200,w_200"}} alt="" width="100" height="100">
+                </td>
+                <td>
+                    <div>
+                        {{example.exampleTitle}}
+                    </div>
+                    <div ng-if="example.content">
+                        <span class="mr20" ng-if="example.industryId || example.content.minArea == 0">{{example.industryId | substr:0:2 | industryName}}-{{example.industryId | substr:0:4 | industryName}}</span>
+                        <span class="mr20" ng-if="(example.content.minArea || example.content.minArea == 0) && vm.pluginId=='xw:siting'">期望面积：{{example.content.minArea}}-{{example.content.maxArea}}㎡ </span>
+                        <span class="mr20" ng-if="(example.content.minRent || example.content.minRent == 0) && vm.pluginId=='xw:siting'">期望租金：{{example.content.minRent/100}}-{{example.content.maxRent/100}}{{example.content.rentMeasure | rentMeasureFilter}} </span>
+                        <span class="mr20" ng-if="(example.content.area || example.content.area == 0) && vm.pluginId=='xw:transfer'">面积：{{example.content.area}}㎡ </span>
+                        <span class="mr20" ng-if="(example.content.rent || example.content.rent == 0) && vm.pluginId=='xw:transfer'">租金：{{example.content.rent/100}}{{example.content.rentMeasure | rentMeasureFilter}} </span>
+                        <span class="mr20" ng-if="vm.pluginId=='xw:transfer'">转让费：{{example.content.transferFee/100}}元 </span>
+                        <br>
+                        <span class="mr20" ng-if="vm.pluginId=='xw:transfer' && example.content.districtId">区域：{{example.content.districtId | substr:0:6 | districtName}}</span>
+                        <span class="mr20" ng-if="vm.pluginId=='xw:transfer' && example.content.districtId">商圈：{{example.content.districtId | substr:0:8 | districtName}} </span>
+                        <span class="mr20" ng-if="vm.pluginId=='xw:transfer' && example.content.address">地址：{{example.content.address}} </span><br ng-if="vm.pluginId=='xw:transfer'">
+                        <span class="mr20"  ng-if="example.startTime">服务开始：{{example.startTime | date: 'yyyy-MM-dd'}} </span>
+                        <span class="mr20"  ng-if="example.endTime">服务结束：{{example.endTime | date: 'yyyy-MM-dd'}}</span>
+                        <span class="mr20"  ng-if="example.cycle">服务周期：{{example.month}}月{{example.day}}天 </span>
+                    </div>
+
+                </td>
+                <td>
+
+                    <div>
+                        <span class="detail-label-width">客户评价:</span>
+                        <span class="text-danger">{{example.opinion | opinionFilter}}</span>
+                    </div>
+                    <div>
+                        <span class="detail-label-width">评价内容:</span>
+                            <span>
+                                {{example.opinionReason}}
+                            </span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span class="detail-label-width">分类:</span>
+                        <span class="text-danger">{{example.category | examplesortFilter}}</span>
+                    </div>
+                    <div id="starlevel">
+                        <span class="detail-label-width">星级:</span>
+                        <span ng-if="example.star==0" class="starlevel"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></span>
+                        <span ng-if="example.star==1" class="starlevel"><span style="color: orange">☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></span>
+                        <span ng-if="example.star==2" class="starlevel"><span style="color: orange">☆</span><span style="color: orange">☆</span><span>☆</span><span>☆</span><span>☆</span></span>
+                        <span ng-if="example.star==3" class="starlevel"><span style="color: orange">☆</span><span style="color: orange">☆</span><span style="color: orange">☆</span><span>☆</span><span>☆</span></span>
+                        <span ng-if="example.star==4" class="starlevel"><span style="color: orange">☆</span><span style="color: orange">☆</span><span style="color: orange">☆</span><span style="color: orange">☆</span><span>☆</span></span>
+                        <span ng-if="example.star==5" class="starlevel"><span style="color: orange">☆</span><span style="color: orange">☆</span><span style="color: orange">☆</span><span style="color: orange">☆</span><span style="color: orange">☆</span></span>
+                    </div>
+                </td>
+                <td>
+                    <a ng-if="example.rating.opinion != 3 && example.rating.opinion != 4 && !example.hasRecommended" ng-click="vm.recommendExample(example,example.id)">推荐给商户</a>
+                    <a ng-if="example.hasRecommended" >已推荐</a>
+                    <span ng-if="example.rating.opinion == 3 ||  example.rating.opinion == 4" class="text-disable">不能推荐</span>
+                </td>
+                <td>
+                  <!--  <a ng-click="vm.viewServiceAndEvaluate(example.serviceId, example)">服务与评价</a>-->
+                    <a  class="btn btn-info btn-xs block" ng-if="example.rating.opinion != 3 && example.rating.opinion != 4 && !example.hasRecommended" ng-click="vm.viewexampleinfo(example,example.id)">案例备注</a>
+                    <a ui-sref="index.main.aboutService({serviceId:example.serviceId, active:'0'})" class="btn btn-info btn-xs block" ng-if="example.rating.opinion != 3 && example.rating.opinion != 4 && !example.hasRecommended">服务备注</a>
+                    <a ui-sref="index.main.aboutService({serviceId:example.serviceId, active:'1'})" class="btn btn-info btn-xs block" ng-if="example.rating.opinion != 3 && example.rating.opinion != 4 && !example.hasRecommended">服务记录</a>
+
+                </td>
+            </tr>
+
+            <tr class="table-detail" ng-show="example.expand">
+                <td colspan="6" class="position-rel ">
+                    <div class="col-xs-10 col-md-10 col-lg-10">
+                        <div>
+                            <span ng-if="vm.pluginId=='xw:transfer'" class="detail-label-width">转店结果:</span>
+                            <span ng-if="vm.pluginId=='xw:siting'" class="detail-label-width">找店结果:</span>
+                            <span class="text-danger">{{vm.exampleinfo.isSuccess | resultissuccessFilter}}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label-width">结束原因:</span>
+                            <span>
+                                {{vm.exampleinfo.endReason | endreasonFilter}}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="detail-label-width">转让费:</span>
+                            <span ng-if="vm.exampleinfo.fee">{{vm.exampleinfo.fee/100}}元</span>
+                            <span ng-if="vm.exampleinfo==null"></span>
+                            <span ng-if="vm.exampleinfo==0">面议</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:siting'">
+                            <span class="detail-label-width">面积:</span>
+                            <span>{{vm.exampleinfo.content.area}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:siting'">
+                            <span class="detail-label-width">租金:</span>
+                            <span ng-if="vm.exampleinfo.content.rent">{{vm.exampleinfo.content.rent/100}}{{vm.exampleinfo.content.rentMeasure |rentMeasureFilter}}</span>
+                            <span ng-if="vm.exampleinfo==null"></span>
+                            <span ng-if="vm.exampleinfo==0">面议</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:siting'">
+                            <span class="detail-label-width">品牌/店名:</span>
+                            <span>{{vm.exampleinfo.content.shopName}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:siting'">
+                            <span class="detail-label-width">地址:</span>
+                            <span>{{vm.exampleinfo.content.address}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:siting'">
+                            <span class="detail-label-width">旧店名称:</span>
+                            <span>{{vm.exampleinfo.content.oldShopName}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:siting'">
+                            <span class="detail-label-width">物业方:</span>
+                            <span>{{vm.exampleinfo.content.property}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:transfer'">
+                            <span class="detail-label-width">新店名称:</span>
+                            <span class="mr20">{{vm.exampleinfo.content.newShopName}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:transfer'">
+                            <span class="detail-label-width">接手人:</span>
+                            <span class="mr20">{{vm.exampleinfo.content.catcher}}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label-width" ng-if="vm.pluginId=='xw:siting'">手机号码:</span>
+                            <span class="detail-label-width" ng-if="vm.pluginId=='xw:transfer'">接手人电话:</span>
+                            <span class="mr20">{{vm.exampleinfo.phone}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:transfer'">
+                            <span class="detail-label-width">经营行业:</span>
+                            <span class="mr20">{{vm.exampleinfo.industryId | industryName}}</span>
+                        </div>
+                        <div ng-if="vm.pluginId=='xw:siting'">
+                            <span class="detail-label-width">旧店行业:</span>
+                            <span class="mr20">{{vm.exampleinfo.industryId | industryName}}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label-width" ng-if="vm.pluginId=='xw:transfer'">转店过程:</span>
+                            <span class="detail-label-width" ng-if="vm.pluginId=='xw:siting'">找店过程:</span>
+                            <span class="mr20">{{vm.exampleinfo.procedure}}</span>
+                        </div>
+                    </div>
+                    <span class="glyphicon glyphicon-remove-circle close-icon" ng-click="vm.closeDetail(example)"></span>
+                </td>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr ng-if="vm.exampleList.length == 0 && vm.complete == true">
+                <td colspan="5"> 暂无服务案例</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div ng-if="vm.pluginId=='xw:recruitment' || vm.pluginId=='xw:reservation'">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th >客户需求信息</th>
+                <th style="width: 250px;">推荐</th>
+                <th style="width: 250px;">查看</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="example in vm.exampleList">
+            <tr >
+                <td>
+                    <div>
+                        {{example.title}}
+                    </div>
+                    <div ng-if="example.requirement.length > 0">
+                        <span class="mr20" ng-if="example.requirement[0].content.industryId || example.requirement[0].content.minArea == 0">{{example.requirement[0].content.industryId | substr:0:2 | industryName}}-{{example.requirement[0].content.industryId | substr:0:4 | industryName}}</span>
+                        <span class="mr20" ng-if="example.requirement[0].content.minArea || example.requirement[0].content.minArea == 0">期望面积：{{example.requirement[0].content.minArea}}-{{example.requirement[0].content.maxArea}}㎡ </span>
+                        <span class="mr20" ng-if="example.requirement[0].content.minRent || example.requirement[0].content.minRent == 0">期望租金：{{example.requirement[0].content.minRent/100}}-{{example.requirement[0].content.maxRent/100}}元/月 </span>
+                        <span class="mr20" ng-if="example.requirement[0].content.area || example.requirement[0].content.area == 0">面积：{{example.requirement[0].content.area}}㎡ </span>
+                        <span class="mr20" ng-if="example.requirement[0].content.rent || example.requirement[0].content.rent == 0">租金：{{example.requirement[0].content.rent/100}}元/月 </span>
+                        <span class="mr20" ng-if="example.requirement[0].content.cost || example.requirement[0].content.cost == 0">转让费：{{example.requirement[0].content.cost/1000000}}万元 </span>
+                    </div>
+                    <div>
+                        <span class="mr20" ng-if="example.requirement[0].content.districtIds">
+                            考虑区域：<span ng-repeat="districtId in example.requirement[0].content.districtIds">
+                                        <span ng-if="districtId.toString().length == 4" class="mr10">{{districtId | cityName}}</span>
+                                        <span ng-if="districtId.toString().length > 4" class="mr10">{{districtId | districtName}}</span>
+                                    </span>
+                        </span>
+                        <span class="mr20" ng-if="example.requirement[0].content.businessStatus"><span ng-if="example.requirement[0].content.businessStatus == 1">营业中</span><span ng-if="example.requirement[0].content.businessStatus == 2">未营业</span>-{{example.requirement[0].content.emptyTransfer | emptyTransfer}}空转</span>
+                        <span class="mr20" ng-if="example.requirement[0].content.districtId">区域：<span>{{example.requirement[0].content.districtId | substr:0:4 |cityName}}</span><span>{{example.requirement[0].content.districtId | substr:0:6 |districtName}}</span><span>{{example.requirement[0].content.districtId | substr:0:8 |districtName}}</span></span>
+
+                    </div>
+                </td>
+                <td>
+                    <a ng-if="example.rating.opinion != 3 && example.rating.opinion != 4 && !example.hasRecommended" ng-click="vm.recommendExample(example,example.id)">推荐给商户</a>
+                    <a ng-if="example.hasRecommended" >已推荐</a>
+                    <span ng-if="example.rating.opinion == 3 ||  example.rating.opinion == 4" class="text-disable">不能推荐</span>
+                </td>
+                <td>
+                    <a ng-click="vm.viewServiceAndEvaluate(example.serviceId, example)">服务与评价</a>
+                </td>
+            </tr>
+            <tr class="table-detail" ng-show="example.expand">
+                <td colspan="3" class="position-rel ">
+                    <div class="col-xs-10 col-md-10 col-lg-10">
+                        <div>
+                            <span class="detail-label-width">客户评价:</span>
+                            <span class="text-danger">{{example.rating.opinion | opinionFilter}}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label-width">评价内容:</span>
+                            <span>
+                                {{example.rating.remark}}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="detail-label-width">成交过程:</span>
+                            <span>
+                                {{example.procedure}}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="detail-label-width">服务开始:</span>
+                            <span class="mr20">{{example.startAt | date: 'yyyy-MM-dd'}}</span>
+                            <span class="detail-label-width">服务结束:</span>
+                            <span class="mr20">{{example.endAt | date: 'yyyy-MM-dd'}}</span>
+                            <span class="detail-label-width">周期:</span>
+                            <span class="mr20 text-danger">{{example.cycle}}</span>
+                        </div>
+                    </div>
+                    <span class="glyphicon glyphicon-remove-circle close-icon" ng-click="vm.closeDetail(example)"></span>
+                </td>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr ng-if="vm.exampleList.length == 0 && vm.complete == true">
+                <td colspan="5"> 暂无服务案例</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="cle"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-5" style="line-height:34px;">
+        总数{{vm.totalCount}}条 共{{numPages}}页
+    </div>
+    <div class="col-lg-7">
+        <nav class="xw-pagination-container">
+            <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages" total-items="vm.totalCount" items-per-page="vm.pageSize" ng-model="vm.currentPage" ng-change="vm.pageto()"></uib-pagination>
+        </nav>
+    </div>
+</div>

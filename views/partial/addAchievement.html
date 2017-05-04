@@ -1,0 +1,58 @@
+<div class="modal-header position-rel">
+    补充业绩
+    <span class="glyphicon glyphicon-remove-circle close-icon" ng-click="vm.cancel()"></span>
+</div>
+<form name="addAchievementForm" class="form-horizontal">
+<div class="modal-body text-center">
+    <div class="form-group">
+        <label class="col-xs-3 control-label"><span class="font-red">*</span>实收金额：</label>
+        <div class="col-xs-9 text-left">
+            <input ng-model="vm.amount" type="number" class="input-md" required name="money" placeholder="填写金额" min="1" max="9999999" ng-pattern="/^((-?[0-9]+)|(-?[0-9]+\.[0-9]{1,2}))$/"><span class="ml15">元</span>
+        </div>
+    </div>
+    <div ng-show="vm.submitted" class="text-left">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-9">
+            <span class="text-danger" ng-if="addAchievementForm.money.$error.required">实收金额必须填</span>
+            <span class="text-danger" ng-if="addAchievementForm.money.$error.min">实收金额必须最小为1</span>
+            <span class="text-danger" ng-if="addAchievementForm.money.$error.max">实收金额必须小于9999999</span>
+            <span style="color:red" ng-show="addAchievementForm.money.$error.pattern">不能超过两位小数</span>
+            <span style="color:red" ng-show="addAchievementForm.money.$error.number">必须是数字</span>
+        </div>
+    </div>
+    <div class="form-group">
+            <label class="col-xs-3 control-label">备注：</label>
+            <div class="col-xs-8">
+                <textarea ng-model="vm.remark" type="text" class="form-control col-xs-8" name="attachment" placeholder="填写备注"  maxlength="300"></textarea>
+            </div>
+    </div>
+    <div ng-show="vm.submitted" class="text-left">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-9">
+            <span class="text-danger" ng-if="addAchievementForm.money.$error.maxlength">备注不能超过300字符</span>
+        </div>
+    </div>
+    <div class="form-group">
+            <label class="col-xs-3 control-label">业绩归属：</label>
+            <div class="col-xs-8 text-left">
+                <div ng-show="vm.businessId != 0">
+                    <label >
+                        <input type="radio" ng-model="vm.ownerId" ng-value="vm.businessId" name="ownerId" ng-disabled="vm.businessId == 0">
+                        原收费者(<span class="mr10">{{vm.businessName}}</span>{{vm.businessMobile}})
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="radio" ng-model="vm.ownerId" ng-value="vm.userId" name="ownerId">
+                        本人(<span class="mr10">{{vm.userName}}</span>{{vm.userMobile}})
+                    </label>
+                </div>
+            </div>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <span class="btn btn-info" ng-click="vm.supplyAchievement(addAchievementForm.$valid)">确认补充业绩</span>
+</div>
+</form>

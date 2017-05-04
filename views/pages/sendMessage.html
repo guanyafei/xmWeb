@@ -1,0 +1,72 @@
+<section class="">
+    <ol class="breadcrumb ">
+        <li>发送短信</li>
+    </ol>
+</section>
+
+<div class="col-md-5" style="height: 800px;">
+    <div class="text-danger" ng-if="!vm.num">您的可用短信量为0，不能发短信！</div>
+    <div class="" ng-if="vm.num">您的可用短信量为{{vm.num}}</div>
+    <div class="mt10">
+        <input type="button" value="+ 选择客户" class="btn btn-info invalid ml15" ng-click="vm.invalid()">
+        <span class="text-danger" ng-if="!vm.selectedCustoms.length">请选择客户</span>
+    </div>
+    <div style="margin: 10px;">已选择顾客 :
+        <div class="row mt10">
+            <div class="col-sm-10">
+                <span class="choiseSelect" ng-repeat="custom in vm.selectedCustoms" ng-click="vm.deleteCustom(custom)">
+                        {{custom.contact | contactLen}}
+                    <span class="del">X</span>
+                </span>
+            </div>
+            <p class="text-danger" ng-if="vm.selectedCustoms.length>20">最多选择20个客户</p>
+        </div>
+    </div>
+    <form name="sendMessage">
+        <label style="margin: 10px;">短信内容：</label><br>
+        <input type="checkbox" ng-model="vm.isAddCustomName"><span>自动在短信前添加客户称呼（超出7个字将截取前7个字做称呼放入短信）</span>
+        <textarea class="form-control" style="height: 200px;" ng-model="vm.content"
+                  placeholder="限制10-200字符，短信发送后不能撤销，请仔细核实短信内容！" name="content" id="" cols="30" rows="3" required
+                  ng-readonly="vm.readonly">
+        </textarea>
+        <p class="text-danger" ng-if="vm.content.length<10">长度不能少于10字</p>
+        <p class="text-danger" ng-if="vm.content.length>200">字数限制200字，已超出{{vm.content.length - 200}}字</p>
+        <div class="text-danger" ng-if="">短信内容含有非法词，请认真检查与修改！</div>
+        <span style="float: right"><span ng-bind="checkContent(vm.content.length)"></span>{{vm.content.length}}/200字 短信数量{{vm.calSmsCount(vm.content, vm.isAddCustomName)}}条</span>
+        <span class="text-danger" ng-if="vm.isSmsEnough()">短信余额不足（还差{{vm.diff}}条）请删减客户；短信每超过70个字会算作2条短信</span>
+        <input type="submit" value="发送短信" ng-disabled="vm.content.length<10 || vm.selectedCustoms.length>20 || vm.selectedCustoms.length===0 || vm.isSmsEnough() || vm.content.length>200"
+               class="btn btn-info pull-left" ng-click="vm.sendSms()" style="margin-top: 50px;">
+    </form>
+</div>
+
+<div class="col-md-1"></div>
+
+<div class="col-md-6" style="height: 800px;">
+    <div style="font-weight: bold">短信预览:</div>
+    <hr>
+    <div>
+        <ul>
+            <li>
+                【铺铺旺】<span ng-if="vm.isAddCustomName">{{vm.selectedCustoms[0].contact | contactLen}}</span>{{vm.content}}
+                退订回T
+            </li>
+            <li ng-if="vm.selectedCustoms.length>1">
+                【铺铺旺】<span ng-if="vm.isAddCustomName">{{vm.selectedCustoms[1].contact | contactLen}}</span>{{vm.content}}
+                退订回T
+            </li>
+        </ul>
+    </div>
+    <hr>
+    <div>
+        <span style="font-weight: bold">说明：</span>
+        <ul>
+            <li>• 给选择的客户发送手机短信。发送给主手机，非其他手机。</li>
+            <li>• 每个员工限制300条/月。</li>
+            <li>• 系统会自动加签名“【铺铺旺】”与“回TD退订”，无需手动添加。</li>
+            <li>• 短信每70字算一条短信（含签名与退订声明）。</li>
+            <li>• 发送范围：你的重点、已联系、发布的信息。</li>
+            <li style="font-weight: bold">• 短信发送后不能撤销，请仔细核实短信内容！</li>
+        </ul>
+    </div>
+
+</div>

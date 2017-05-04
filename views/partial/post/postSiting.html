@@ -1,0 +1,428 @@
+<div class="siting" ng-show="vm.pluginId == vm.sitingPluginId">
+    <h4 class="lh65 05em">找店信息内容</h4>
+
+    <form class="form-horizontal" name="sitingForm" novalidate>
+
+
+        <!--信息来源-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>信息来源</label>
+                <div class="col-sm-2">
+                    <select name="leaseInfomationSources" class="form-control" ng-model="vm.leaseInfomationSources" required
+                            ng-options="type.value as type.name for type in vm.leaseInfomationSourcesSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+            <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-3"><span style="color:red"
+                                            ng-show="sitingForm.leaseInfomationSources.$error.required">请选择信息来源</span></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label  class="col-sm-2 control-label"><span class="required">*</span>求租行业</label>
+                <div class="col-sm-10 ">
+                    <button class="btn btn-info" data-toggle="modal" data-target="#industryExpandSelectModal" ng-click="vm.singleIndustryFlag = true">
+                        <span ng-if="vm.singleIndustry">{{vm.singleIndustry.name}}</span>
+                        <span ng-if="!vm.singleIndustry">选择业态</span>
+                    </button>
+                </div>
+                <!--<div class="col-sm-2">-->
+                    <!--<select name="industry" class="form-control" ng-model="vm.industryId" ng-change="vm.loadSmallIndustries(vm.industryId)"-->
+                            <!--ng-options="industry.code as industry.name for industry in vm.industriesSelect">-->
+                        <!--<option value="">请选择</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col-sm-2">-->
+                    <!--<select name="smallIndustry" class="form-control" ng-model="vm.smallIndustryId" required-->
+                            <!--ng-change="vm.sloganInit()"-->
+                            <!--ng-options="smallIndustry.code as smallIndustry.name for smallIndustry in vm.smallIndustriesSelect">-->
+                        <!--<option value="">请选择</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+            </div>
+            <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <span style="color:red" ng-show="!vm.singleIndustry">请选择行业</span>
+                </div>
+            </div>
+        </div>
+        <!--经营类型-->
+        <div class="form-group">
+            <div class="row">
+                <label for="" class="control-label col-sm-2" ><span class="required">*</span>经营类型</label>
+                <div class="col-sm-2">
+                    <select name="industryType"  ng-model="vm.industryType" class="form-control" ng-options="type.value as type.name for type in vm.industryTypeSelect" required>
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" ng-show="vm.sitingFormSubmitted">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color: red" ng-show="sitingForm.industryType.$error.required">经营类型不能为空</span>
+                </div>
+            </div>
+        </div>
+        <!--品牌名称-->
+        <div class="form-group" ng-if="vm.industryType ==2 || vm.industryType ==3">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>品牌名称</label>
+                <div class="col-sm-2">
+                    <input type="text" ng-model="vm.brandName" name="brandName" class="form-control" required ng-maxlength="15" placeholder="限15字">
+                </div>
+            </div>
+            <div class="row" ng-show="vm.sitingFormSubmitted">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color: red" ng-show="sitingForm.brandName.$error.required">品牌名称不能为空</span>
+                    <span style="color: red" ng-show="sitingForm.brandName.$error.maxlength">品牌名称不能超过15字</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!--首选类型-->
+        <div class="form-group">
+            <div class="row">
+                <label for="" class="col-sm-2 control-label"><span class="required">*</span>首选类型</label>
+                <div class="col-sm-2">
+                    <select name="type" id="" ng-model="vm.type" required class="form-control" ng-options="type.value as type.name for type in vm.typeSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+        <!--    <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-3"><span style="color:red"
+                                            ng-show="transferForm.transferType.$error.required">请选择类型</span></div>
+            </div>-->
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label  class="col-sm-2 control-label"><span class="required">*</span>期望区域</label>
+                <div class="col-sm-2">
+                    <select name="city" class="form-control" ng-model="vm.cityId"
+                            ng-required="!vm.businessAreasSelect || vm.businessAreasSelect.length == 0"
+                            ng-change="vm.loadDistricts(vm.cityId)"
+                            ng-options="city.code as city.name for city in vm.cities">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select name="district" class="form-control" ng-model="vm.districtId"
+                            ng-change="vm.loadBusinessAreas(vm.districtId)"
+                            ng-options="district.code as district.name for district in vm.districtsSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-2" ng-if="vm.businessAreasSelect && vm.businessAreasSelect.length > 0">
+                    <select name="businessArea" class="form-control" ng-model="vm.businessAreaId"
+                            ng-options="businessArea.code as businessArea.name for businessArea in vm.businessAreasSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-primary" style="margin-top: 5px;"  ng-disabled="vm.districtIds.length == 10" ng-click="vm.addDistrict()"> +添加</button>（最多10项）
+                </div>
+            </div>
+            <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10"><span style="color:red" ng-show="vm.districtIds.length == 0">请添加区域</span></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 col-md-10" id="sitingDistrictContainer">
+                <district ng-repeat="district in vm.districtIds" district-id = "district" remove-district="vm.removeDistrict(district)"></district>
+            </div>
+        </div>
+
+        <!--期望面积-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>期望面积</label>
+                <div class="col-sm-10">
+                    <input class="input-md" name="minArea" type="number" ng-model="vm.minArea"
+                           required min="0" max="999999" required min="1" max="999999" ng-pattern="/^(-?[0-9]+)$/">-
+                    <input class="input-md" name="maxArea" type="number" ng-model="vm.maxArea" ng-blur="vm.titleInit();"
+                           required min="0" max="999999" required min="1" max="999999" ng-pattern="/^(-?[0-9]+)$/">平米
+                </div>
+            </div>
+            <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <span style="color:red" ng-show="sitingForm.minArea.$error.required">请选择最小面积</span>
+                    <span style="color:red" ng-show="sitingForm.minArea.$error.min">最小面积最小为1</span>
+                    <span style="color:red" ng-show="sitingForm.minArea.$error.max">最小面积最大为999999</span>
+                    <span style="color:red" ng-show="sitingForm.minArea.$error.pattern">最小面积不能有小数</span>
+                    <span style="color:red" ng-show="sitingForm.minArea.$error.number">最小面积只能为数字</span>
+                    <span style="color:red" ng-show="sitingForm.maxArea.$error.required">请选择最大面积</span>
+                    <span style="color:red" ng-show="sitingForm.maxArea.$error.min">最小面积最大为1</span>
+                    <span style="color:red" ng-show="sitingForm.maxArea.$error.max">最小面积最大为999999</span>
+                    <span style="color:red" ng-show="sitingForm.maxArea.$error.pattern">最小面积不能为小数</span>
+                    <span style="color:red" ng-show="sitingForm.maxArea.$error.number">最小面积只能为数字</span>
+                </div>
+            </div>
+        </div>
+
+        <!--期望面积-->
+<!--        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>期望租金</label>
+                <div class="col-sm-2">
+                    <select name="rent" class="form-control" ng-model="vm.rentSelectId" required
+                            ng-options="rent.value as rent.name for rent in vm.rentSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select name="rentMeasure" class="form-control" ng-model="vm.rentMeasure" ng-options="rentMeasure.value as rentMeasure.name for rentMeasure in vm.rentMeasureSelect" required>
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <span style="color:red" ng-show="sitingForm.rent.$error.required">请选择期望租金</span>
+                    <span style="color:red" ng-show="sitingForm.rentMeasure.$error.required">请选择租金单位</span>
+                </div>
+            </div>
+        </div>-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">期望租金</label>
+                <div class="col-sm-4">
+                    <input name="minRent" type="number" class="input-md" placeholder="面议" ng-model="vm.minRent" min="0"
+                             ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/">-
+                    <input class="input-md" name="maxRent" type="number" ng-model="vm.maxRent"
+                min="0"   placeholder="面议"   ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/">
+
+                </div>
+                <div class="col-sm-2">
+                    <select name="rentMeasure" class="form-control" style="position: relative;left: -50px;margin-top: 0px" ng-model="vm.rentMeasure" ng-options="rentMeasure.value as rentMeasure.name for rentMeasure in vm.rentMeasureSelect">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="sitingForm.minRent.$error.pattern">期望租金为6为整数+2位小数</span>
+                    <span style="color:red" ng-show="sitingForm.maxRent.$error.pattern">期望租金为6位整数+2位小数</span>
+                    <span style="color:red" ng-show="sitingForm.maxRent.$error.min">租金不能小于0元</span>
+                    <span style="color:red" ng-show="sitingForm.minRent.$error.min">租金不能小于0元</span>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--副标题-->
+        <!--<div class="form-group">-->
+            <!--<div class="row">-->
+                <!--<label class="col-sm-2 control-label">副标题</label>-->
+                <!--<div class="col-sm-5">-->
+                    <!--<input name="slogan" type="text" class="form-control" ng-focus="vm.sloganInit()" ng-maxlength="20" placeholder="请输入副标题" ng-model="vm.slogan">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div ng-show="vm.sitingFormSubmitted" class="row">-->
+                <!--<div class="col-sm-2"></div>-->
+                <!--<div class="col-sm-5">-->
+                    <!--<span style="color:red" ng-show="sitingForm.slogan.$error.maxlength">副标题最长为20字符</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--物业配套-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">配套要求</label>
+                <div class="col-sm-5">
+                    <span style="margin-right: 33px;"  ng-repeat="facilities in vm.facilitiesSelect"><input type="checkbox" ng-checked="facilities.check"  ng-modol="facilities.value" ng-click="vm.addFacilities(facilities.value)">{{facilities.name}}</span>
+                    <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="vm.selectAllFacilitiesStatus" ng-click="vm.selectAllFacilities()"> <span style="color:red;">全选/取消</span>
+
+                </div>
+            </div>
+        </div>
+
+        <!--标题-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>标题</label>
+                <div class="col-sm-5">
+                    <input name="title" ng-focus="vm.titleInit()" type="text" class="form-control" maxlength="30" placeholder="请输入标题" ng-model="vm.title" required>
+                </div>
+            </div>
+            <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="sitingForm.title.$error.required">标题不能为空</span>
+                    <span style="color:red" ng-show="sitingForm.title.$error.maxlength">标题最长为30字符</span>
+                </div>
+            </div>
+        </div>
+
+        <!--最短租期-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">最短租期</label>
+                <div class="col-sm-2">
+                    <select name="contractPeriod" class="form-control" ng-model="vm.contractPeriod"
+                            ng-options="contractPeriod.value as contractPeriod.name for contractPeriod  in vm.contractPeriodSelect">
+                   <!--     <option value="">请选择</option>-->
+                    </select>
+
+                </div>
+            </div>
+        </div>
+
+        <!--门宽要求-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">门宽要求</label>
+                <div class="col-sm-8">
+                    <input type="number" class="input-md" placeholder="一位整数+两位小数" ng-pattern="/^((\d)|(\d\.\d{0,2}))$/"  name="doorWidth" ng-model="vm.doorWidth">（米）
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="sitingForm.doorWidth.$error.pattern">门宽格式不正确（一位整数+两位小数，例如3, 3.2, 3.22）</span>
+                </div>
+            </div>
+        </div>
+
+        <!--联系人-->
+        <div class="form-group" ng-if="vm.isRevamp">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>联系人</label>
+                <div class="col-sm-5">
+                    <input type="text" placeholder="联系人名称" class="form-control" name="contact"  ng-model="vm.contact" required ng-minlength="2" ng-maxlength="12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <span style="color:red" ng-show="sitingForm.contact.$error.required">联系人名称不能为空</span>
+                    <span style="color:red" ng-show="sitingForm.contact.$error.minlength">联系人名称最少2个字符</span>
+                    <span style="color:red" ng-show="sitingForm.contact.$error.maxlength">联系人名称最长12个字符</span>
+                </div>
+            </div>
+        </div>
+
+        <!--QQ 微信 其他-->
+
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">QQ</label>
+                <div class="col-sm-2">
+                    <input type="text" placeholder="请填写QQ" class="form-control" name="qqNumber" ng-model="vm.qqNumber" ng-maxlength="20" >
+                </div>
+            </div>
+          <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="sitingForm.qqNumber.$error.maxlength">QQ长度不得超过20位</span>
+              </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">微信号</label>
+                <div class="col-sm-2">
+                    <input type="text" placeholder="请填写微信号" class="form-control" name="wechatNumber" ng-model="vm.wechatNumber" ng-maxlength="20">
+                </div>
+            </div>
+           <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="sitingForm.wechatNumber.$error.maxlength">微信号码长度不得超过20位</span>
+               </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">其他手机号</label>
+                <div class="col-sm-2">
+                    <input type="text" placeholder="请填写其他手机号" ng-keyup="vm.checkMobileToExists()" class="form-control" name="otherContact" ng-model="vm.otherContact" ng-maxlength="11" ng-minlength="11">
+                </div>
+            </div>
+         <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="sitingForm.otherContact.$error.maxlength">其他号码长度11位</span>
+                    <span style="color:red" ng-show="sitingForm.otherContact.$error.minlength">其他号码长度11位</span>
+                    <span style="color:red" ng-if="vm.checkMobileToExistsResult">该号码已经是其他信息的合伙人号码</span>
+                </div>
+            </div>
+        </div>
+        <!--籍贯-->
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">籍贯</label>
+                <div class="col-sm-2">
+                    <input type="text" placeholder="请填写籍贯" class="form-control" name="nativePlace" ng-model="vm.nativePlace" ng-maxlength="8">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <span style="color:red" ng-show="sitingForm.nativePlace.$error.maxlength">籍贯不得超过8位</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label">选择要求</label>
+                <div class="col-sm-10">
+                    <ul class="requireSelect-wrap">
+                        <li ng-repeat="optional in vm.requireOptional" ng-click="vm.addRequire(optional)" ng-class="{select: optional.state}" class="requireSelect">{{optional.name}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-2 control-label"><span class="required">*</span>要求</label>
+                <div class="col-sm-5">
+                    <textarea name="remark" class="form-control" rows="3" placeholder="请输入要求，字数10-1000" ng-model="vm.remark" maxlength="1000" minlength="10" required></textarea>
+                </div>
+                <div class="col-sm-2 word-count">
+                    <div ng-if="vm.remark.length">{{vm.remark.length}}/1000</div>
+                    <div ng-if="!vm.remark.length">少于10个字符</div>
+                </div>
+            </div>
+            <div ng-show="vm.sitingFormSubmitted" class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <span style="color:red" ng-show="sitingForm.remark.$error.maxlength">要求内容不能超过1000个字符</span>
+                    <span style="color:red" ng-show="sitingForm.remark.$error.required">要求内容不能为空</span>
+                    <span style="color:red" ng-show="sitingForm.remark.$error.minlength">要求内容不能少于10个字符</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!--vm.sitingPost(sitingForm.$valid);-->
+            <div class="col-sm-offset-2 col-sm-10">
+                <a type="submit" class="btn  btn-info btn-lg" href="javascript:void(0)" ng-click="vm.sitingPost(sitingForm.$valid)"><span ng-if="!vm.isRevamp">发布信息</span><span ng-if="vm.isRevamp">提交</span></a>
+                <a type="submit" ng-if="!vm.isRevamp" class="btn btn-primary btn-lg" href="javascript:void(0)" ng-click="vm.sitingPostAndTake(sitingForm.$valid)">发布并领取业务</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div ng-include="'views/partial/industryExpandSelectModal.html'"></div>

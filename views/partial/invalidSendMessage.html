@@ -1,0 +1,123 @@
+<div class="" ng-click="vm.flagCount(vm.resourceList)">
+    <div class="modal-header">
+        <h3 class="modal-title">选择客户（只能查询与选择自己的非收费客户）</h3>
+    </div>
+    <div class="modal-body">
+        <!--搜索条件-->
+        <form name="searchForm">
+            <div class="normal-line pl30">
+                <ul>
+                    <li class="clearfix toolbar-line form-group">
+                        <span class="mr10">
+                                <span>分类:</span>
+                                <select class="select-s" name="type" ng-model="vm.type"
+                                        ng-options="type.value as type.name for type in vm.typeSelect">
+                                </select>
+                        </span>
+
+                        <span class="mr10">
+                                <span>类型:</span><!--选择插件-->
+                                <select class="select-s" name="plugin" ng-model="vm.pluginId"
+                                        ng-options="plginId.value as plginId.name for plginId in vm.pluginIdSelect">
+                                </select>
+                            <span ng-if="vm.pluginId == 'xw:transfer'">
+                                <select class="select-s" name="transferType" ng-model="vm.transferType"
+                                    ng-options="transferType.value as transferType.name for transferType in vm.transferTypeSelect">
+                                </select>
+                            </span>
+                        </span>
+                    </li>
+                    <li class="clearfix toolbar-line form-group">
+                        <span class="mr10">
+                            <span ng-if="vm.type==0">
+                            <span>业务中:</span>
+                            <select class="select-s" name="businessStatus" ng-model="vm.businessStatus"
+                                    ng-options="businessStatus.value as businessStatus.name for businessStatus in vm.businessStatusSelect">
+                            </select>
+                            </span>
+                        </span>
+                        <span class="mr10">
+                            <span>发送记录:</span>
+                            <select class="select-s" name="sendRecord" ng-model="vm.sendRecord"
+                                    ng-options="sendRecord.value as sendRecord.name for sendRecord in vm.sendRecordSelect">
+                            </select>
+                        </span>
+                        <button type="button" class="btn btn-info" ng-click="vm.query(true)">查询</button>
+                    </li>
+                    <li class="clearfix toolbar-line form-group">
+                        <table style="width: 80%;">
+                            <tr>
+                                <td>
+                                    <label class="opportunity-control-label ">关键字搜索：</label>
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="vm.keyword" ng-keypress="vm.enterPress($event)"  id="exampleInputName2" class="form-control" placeholder="输入手机号码">
+                                </td>
+                                <td>
+                                    <input name="idnum" type="number"  ng-pattern="/^([0-9]{1,9})$/"  ng-model="vm.idnum" ng-keypress="vm.enterPress($event)" ng-keydown="vm.eKey($event)" class="form-control"  id="exampleInputName3" placeholder="输入编号">
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-info" ng-click="vm.search()">搜索</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+        </form>
+
+        <!--查询结果-->
+        <div class="xw-table">
+            <div class="title-business">
+                <span class="col-sm-2">编号</span>
+                <span class="col-sm-4">信息</span>
+                <span class="col-sm-4">发送记录|状态</span>
+                <span class="col-sm-2">城市</span>
+            </div>
+            <div class="line"></div>
+            <div class="mt10 row" ng-repeat="message in vm.resourceList"  style="border-bottom: 1px solid #f2f2f2;padding-bottom: 10px">
+                <div class="col-sm-2">
+                    <input type="checkbox" ng-checked="message.$isChecked" ng-model="message.$checked" ng-click="vm.selected(message)"><span>{{message.oppId}}</span>
+                </div>
+                <div class="col-sm-4">
+                    <span>{{message.title}}</span><br>
+                    <span>{{message.contact}} {{message.mobile}}</span>
+                </div>
+                <div class="col-sm-4">
+                    <span>状态：{{message.status | businessStatus}}</span><br>
+                    <span ng-if="message.createTime">短信:{{message.createTime | date: 'yyyy-MM-dd'}}</span>
+                </div>
+                <div class="col-sm-2">
+                    <span>{{message.cityId | cityName}}</span>
+                </div>
+            </div>
+            <div class="cle-business"></div>
+            <div ng-if="vm.showWarning" class="alert alert-danger clearfix" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                {{vm.warning}}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <input type="checkbox" ng-checked="vm.allSelected" ng-model="vm.allSelected" ng-change="vm.selectAll(vm.allSelected, vm.resourceList)"> <span>全选</span>
+        <input type="submit" class="btn btn-primary"  value="确定" ng-disabled="vm.showWarning" ng-click="vm.submit($index)">
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3" style="line-height:34px;">
+            <!--总数{{vm.totalCount}}条 共{{numPages}}页-->
+        </div>
+
+        <div class="col-sm-7 col-md-7">
+            <nav class="xw-pagination-container">
+                <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages"
+                                total-items="vm.totalCount" items-per-page="vm.pageSize" ng-model="vm.currentPage"
+                                ng-change="vm.changePage()"></uib-pagination>
+            </nav>
+        </div>
+    </div>
+</div>
+

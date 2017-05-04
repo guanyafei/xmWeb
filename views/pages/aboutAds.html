@@ -1,0 +1,112 @@
+<section>
+	<ol class="breadcrumb ">
+		<li>广告位情况</li>
+	</ol>
+</section>
+
+<div class="">
+    <div class="row">
+        <div class="col-sm-12 clearfix xw-service-hall">
+            <form name="searchForm">
+                <ul>
+                    <li class="clearfix toolbar-line form-group">
+                        <!--选择区域-->
+                        <span class="mr10">
+                            <span>城市:</span>
+                            <select class="select-s" name="district"
+                                    ng-model="vm.cityId"
+                                    ng-change="vm.cityChanged(vm.cityId)"
+                                    ng-options="city.code as city.name for city in vm.cityselect">
+                            </select>
+                         </span>
+                        <!--排序-->
+                        <span class="mr10">
+                            <span>频道:</span>
+                            <select class="select-s" name="channel"
+                                    ng-model="vm.channel"
+                                    ng-change="vm.channelChanged(vm.channel)"
+                                    ng-options="channel.value as channel.name for channel in vm.channelSelect">
+                            </select>
+                        </span>
+                        <span>
+                            <button ng-click="vm.query(vm.cityId,vm.channel)" class="btn btn-info">查询</button>
+                        </span>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+    <hr>
+
+
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr style="background: lightgrey">
+            <!--    <th style="width: 80px;">频道</th>
+                <th style="width: 100px;">城市</th>-->
+                <th style="width: 200px;">广告</th>
+                <th style="width: 180px;">剩余位置</th>
+                <th style="width: 180px;">可显示广告数</th>
+                <th style="width: 180px;">已上线</th>
+                <th style="width: 180px;">已暂停</th>
+                <th style="width: 180px;">已过期</th>
+                <th style="width: 180px;">超出不显示广告数</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="advertisement in vm.advertisementList">
+         <!--       &lt;!&ndash; 频道 &ndash;&gt;
+                <td>
+                    <div class="text-info">{{vm.channelName | channelName}}</div>
+                </td>
+                &lt;!&ndash; 城市 &ndash;&gt;
+                <td>
+                    <div class="text-info">{{vm.cityIdName | cityName}}</div>
+                </td>-->
+                <!-- 广告 -->
+                <td>
+                    <div class="text-info">{{advertisement.name}}</div>
+                </td>
+                <!-- 剩余位置 -->
+                <td>
+                    <div ng-if="advertisement.adNum - advertisement.onShow > 0 " class="text-info" style="color: red">{{advertisement.numLeft}}</div>
+                    <div ng-if="advertisement.adNum - advertisement.onShow <= 0 " class="text-info grey">0</div>
+                </td>
+                <!--可显示广告数-->
+                <td>
+                    <div class="text-info" ng-class="{'grey':advertisement.adNum==0}">{{advertisement.adNum}}</div>
+                </td>
+                <!-- 已上线 -->
+                <td>
+                    <div class="text-info" ng-class="{'grey':advertisement.onShow==0}">{{advertisement.onShow}}</div>
+                </td>
+                <!-- 已暂停 -->
+                <td>
+                    <div class="text-info" ng-class="{'grey':advertisement.onSuspended==0}">{{advertisement.onSuspended}}</div>
+                </td>
+                <!-- 已过期 -->
+                <td>
+                    <div class="text-info" ng-class="{'grey':advertisement.overdue==0}">{{advertisement.overdue}}</div>
+                </td>
+                <!-- 超出不显示广告数 -->
+                <td>
+                    <div class="text-info" ng-class="{'grey':advertisement.adsWaited==0}">{{advertisement.adsWaited}}</div>
+                 <!--   <div ng-if=" advertisement.onShow - advertisement.adNum > 0" class="text-info">{{advertisement.onShow - advertisement.adNum}}</div>
+                    <div ng-if="advertisement.onShow - advertisement.adNum <= 0 " class="text-info grey">0</div>-->
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+
+
+
+

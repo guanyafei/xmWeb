@@ -1,0 +1,407 @@
+<section >
+    <ol class="breadcrumb ">
+        <li>{{vm.pluginId | pluginIdFilter}}业务大厅</li>
+    </ol>
+</section>
+
+<div >
+    <form class="form-inline clearfix" ng-if="vm.isIdentify" name="businessForm">
+        <div class="form-group">
+
+
+            <div ng-if="vm.pluginId == 'xw:transfer'">
+                <label class="opportunity-control-label">类型：</label>
+                <select class="form-control" title="category"
+                        ng-model="vm.queryType">
+                    <option value="0">全部转店/出租招商</option>
+                    <option value="1">转店</option>
+                    <option value="2">出租招商</option>
+                </select>
+            </div>
+
+            <label class="opportunity-control-label">行业：</label>
+            <select class="form-control" title="category"
+                    ng-model="vm.industryId"
+                    ng-change="vm.loadSmallIndustries(vm.industryId)"
+                    ng-options="industry.code as industry.name for industry in vm.industry">
+                <option value="">行业</option>
+            </select>
+            <select class="form-control" title="category"
+                    ng-model="vm.smallIndustryId"
+                    ng-options="industry.code as industry.name for industry in vm.smallIndustry">
+                <option value="">小行业</option>
+            </select>
+
+            <span ng-if="vm.pluginId == 'xw:transfer'">
+                <label class="opportunity-control-label">适合经营：</label>
+                <select class="form-control" title="category"
+                        ng-model="vm.fitIndustryId"
+                        ng-change="vm.loadFitSmallIndustries(vm.fitIndustryId)"
+                        ng-options="industry.code as industry.name for industry in vm.fitIndustry">
+                    <option value="">行业</option>
+                </select>
+                <select class="form-control" title="category"
+                        ng-model="vm.fitSmallIndustryId"
+                        ng-options="industry.code as industry.name for industry in vm.fitSmallIndustry">
+                    <option value="">小行业</option>
+                </select>
+            </span>
+
+            <label class="opportunity-control-label">区域：</label>
+            <select class="form-control" title="category"
+                    ng-model="vm.districtId"
+                    ng-options="district.code as district.name for district in vm.district"
+                    ng-change="vm.loadBusinessAreas(vm.districtId)">
+                <option value="">选择区域</option>
+            </select>
+            <select class="form-control" title="category"
+                    ng-model="vm.businessAreaId"
+                    ng-options="businessArea.code as businessArea.name for businessArea in vm.businessArea">
+                <option value="">选择商圈</option>
+            </select>
+            <br>
+
+            <span ng-if="vm.areaDisable">
+                <label class="opportunity-control-label">面积：</label>
+                <input class="input-s" type="number" ng-model="vm.minArea" placeholder="最小面积"> - <input class="input-s" type="number" ng-model="vm.maxArea" placeholder="最大面积"> ㎡
+            </span>
+
+            <span ng-if="vm.pluginId == 'xw:transfer' || vm.pluginId == 'xw:siting'">
+                <label class="opportunity-control-label">租金：</label>
+                <input class="input-s" name="minRent" type="number" ng-model="vm.minRent" placeholder="最小租金" min="0" max="999999.99" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/">
+                - <input class="input-s" name="maxRent" type="number" ng-model="vm.maxRent" placeholder="最大租金" min="0"  max="999999.99" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/"> 元/月
+            </span>
+
+            <label class="opportunity-control-label">录入账号：</label>
+            <input class="input-md" type="text" ng-model="vm.account">
+            <br>
+            <div>
+
+                <span>
+                    <label ng-if="vm.queryAreaMsg != ''" class="opportunity-control-label"></label><span ng-if="vm.queryAreaMsg != ''" class="font-red">{{vm.queryAreaMsg}}</span>
+                </span>
+                <span style="margin-left: 300px;">
+                    <span ng-if="vm.submitted && businessForm.$error" >
+                        <label class="opportunity-control-label"></label>
+                        <span class="red" ng-if="businessForm.minRent.$error.pattern && !businessForm.minRent.$error.max">租金只能两位小数</span>
+                        <span class="red" ng-if="businessForm.minRent.$error.min">租金不能为负数</span>
+                        <span class="red" ng-if="businessForm.minRent.$error.max">租金不能为大于999999.99</span>
+                        <span class="red" ng-if="businessForm.maxRent.$error.pattern && !businessForm.maxRent.$error.max">租金只能两位小数</span>
+                        <span class="red" ng-if="businessForm.maxRent.$error.min">租金不能为负数</span>
+                        <span class="red" ng-if="businessForm.maxRent.$error.max">租金不能为大于999999.99</span>
+                    </span>
+                    <span ng-if="vm.queryRentMsg && vm.queryRentMsg != ''" >
+                        <label class="opportunity-control-label"></label>
+                        <span class="font-red">{{vm.queryRentMsg}}</span>
+                        <br>
+                    </span>
+                </span>
+                <br>
+
+
+            </div>
+
+            <!--<label ng-if="vm.queryAreaMsg != ''" class="opportunity-control-label"></label><span ng-if="vm.queryAreaMsg != ''" class="font-red">{{vm.queryAreaMsg}}</span>-->
+            <!--<br ng-if="vm.queryAreaMsg != ''">-->
+
+
+            <label class="opportunity-control-label">发布时间：</label>
+            <span class="input-group">
+                <input class="form-control" placeholder="开始时间" type="text" is-open="vm.publishDateStartCollaspse" uib-datepicker-popup="yyyy-MM-dd" ng-model="vm.publishDateStart">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default form-control" ng-click="vm.publishDateStartCollaspse = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </span> -
+            <span class="input-group">
+                <input class="form-control" placeholder="结束时间" type="text" is-open="vm.publishDateEndCollaspse" uib-datepicker-popup="yyyy-MM-dd" ng-model="vm.publishDateEnd">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default form-control" ng-click="vm.publishDateEndCollaspse = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </span>
+            <!--<select class="form-control" title="order" ng-model="vm.order">
+                <option value="postDate">按发布时间倒序</option>
+                <option value="revampDate">按修改时间倒序</option>
+            </select>-->
+            <button type="button" class="btn btn-info" ng-click="vm.fireQueryOrSearch('query', businessForm.$valid)">查询</button>
+            <br>
+            <label ng-if="vm.queryDateMsg != ''" class="opportunity-control-label"></label><span ng-if="vm.queryDateMsg != ''" class="font-red">{{vm.queryDateMsg}}</span>
+        </div>
+        <p style="width: 50%;border-bottom: 1px solid lightgrey;margin-bottom: 5px;"></p>
+        <div >
+            <label class=" opportunity-control-label">关键字搜索：</label>
+            <input type="text" ng-model="vm.keyword" ng-keypress="vm.enterPress($event)" class="form-control" id="exampleInputName2" placeholder="输入手机号码/店名/标题">
+            <input name="idnum" type="number"  ng-pattern="/^([0-9]{1,9})$/" ng-if="vm.pluginId == 'xw:transfer' || vm.pluginId == 'xw:siting'" ng-model="vm.idnum" ng-keypress="vm.enterPress($event)" ng-keydown="vm.eKey($event)" class="form-control" id="exampleInputName3" placeholder="输入编号">
+            <button type="button" class="btn btn-info" ng-click="vm.fireQueryOrSearch('search')">搜索</button>
+        </div>
+        <!--        <div ng-show="businessForm.idnum.$error.maxlength" style="margin-left: 290px;"><p style="color: red;">标号长度为1-10位整数</p></div>-->
+        <div ng-show="businessForm.idnum.$error.pattern" style="margin-left: 290px;"><p style="color: red;">编号为1-9位整数</p></div>
+        <div ng-show="vm.e_num==true" style="margin-left: 290px;"><p style="color: red;">此处e为字母，不能输入字母</p></div>
+    </form>
+    <div class="line clearfix"></div>
+    <div ng-if="vm.showWarning" class="alert alert-danger clearfix" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{vm.warning}}
+    </div>
+    <div ng-if="vm.totalCount > vm.pageSize" ng-include="'views/partial/pageFliper.html'"></div>
+    <div class="cle"></div>
+    <div class="media borrad" ng-repeat="i in vm.list track by i.id ">
+
+        <div ng-if="!i.modify">
+            <!--文字-->
+            <div class="media-body">
+                <!--左列-->
+                <div class="media-middle col-md-3 col-lg-3 col-xs-3 lef">
+                    <h4 class="media-heading">
+                        <a ng-if="i.status != 2" ui-sref="index.main.opportunityDetail({oppId:i.id, activeTab:0, serviceStatus:i.serviceId != 0 ? i.serviceInfo.status : 0})" target="_blank">{{i.title}}</a>
+                        <a ng-if="i.status == 2" ui-sref="index.main.serviceDetail({serviceId:i.serviceId,active:0})" target="_blank">{{i.title}}</a>
+                        <a class="f12" ng-if="i.pluginId == 'xw:transfer' && i.transferType==1" href="http://{{vm.cityLetter}}.pupuwang.com/syzr/details/{{i.id}}" target="_blank">官网详情</a>
+                        <a class="f12" ng-if="i.pluginId == 'xw:transfer' && i.transferType==2" href="http://{{vm.cityLetter}}.pupuwang.com/spzs/details/{{i.id}}" target="_blank">官网详情</a>
+                        <a class="f12" ng-if="i.pluginId == 'xw:siting'" href="http://{{vm.cityLetter}}.pupuwang.com/qzqg/details/{{i.id}}" target="_blank">官网详情</a>
+                        <a class="f12" ng-if="i.pluginId == 'xw:recruitment'" href="http://{{vm.cityLetter}}.pupuwang.com/job/details/{{i.id}}" target="_blank">官网详情</a>
+                        <a class="f12" ng-if="i.pluginId == 'xw:reservation'" href="http://{{vm.cityLetter}}.pupuwang.com/sh/details/{{i.id}}" target="_blank">官网详情</a>
+
+                    </h4>
+
+                    <div class="text-left">
+                        状态:<span ng-class="{red: i.status == 2, red: i.status != 2}">{{i.status | postStatus}}</span>
+                        <span ng-if="i.status == 2 && (i.serviceInfo.status==2 || i.serviceInfo.status==3) && i.serviceInfo.endTime != 32503593600000" class="red">(服务已结束，{{i.serviceInfo.startTime | date: 'yyyy-MM-dd '}}至{{i.serviceInfo.endTime | date: 'yyyy-MM-dd'}})</span>
+                        <span ng-if="i.status == 2 && (i.serviceInfo.status==2 || i.serviceInfo.status==3) && i.serviceInfo.endTime == 32503593600000" class="red">
+                            <span ng-if="vm.pluginId == 'xw:siting'">(服务已结束,{{i.serviceInfo.startTime | date: 'yyyy-MM-dd '}}-找到为止)</span>
+                            <span ng-if="vm.pluginId == 'xw:transfer'">(服务已结束,{{i.serviceInfo.startTime | date: 'yyyy-MM-dd '}}-转让为止)</span>
+                        </span>
+                        <span class="label label-warning">{{i.pluginId | pluginIdFilter}}</span>
+                        <span class="label label-info" ng-if="i.merchantPost">商家发布</span>
+                        <span class="label label-info" ng-if="i.serviceId > 0 && i.serviceInfo.status == 0">试用</span>
+                        <span class="label label-danger" ng-if="i.new">新</span>
+                    </div>
+
+                    <span ng-if="i.tramsferStatus">{{i.tramsferStatus}}<br></span>
+                    <span ng-if="i.positionIds && i.positionIds.length > 0 ">职位：<span ng-repeat="position in i.positionIds track by $index">{{position | positionName}}<span ng-if="!$last">、</span></span></span>
+                </div>
+
+
+
+                <div class="media-middle col-md-3 col-xs-3 col-lg-3 lef">
+                    <span ng-if="i.pluginId == 'xw:transfer'">
+                        <div>面积：{{i.area}}平米</div>
+                        <div>租金：{{i.rent}}{{i.rentMeasure | rentMeasureFilter}}</div>
+                        <div ng-if="i.transferType == 1 && i.cost == 0">转让费：面议</div>
+                        <div ng-if="i.transferType == 1 && i.cost != 0">转让费：{{i.cost}}万元</div>
+                    </span>
+                    <span ng-if="i.pluginId == 'xw:siting'">
+                        <div>期望面积：{{i.minArea}} - {{i.maxArea}}平米</div>
+                        <div>期望租金：
+                            <span ng-if="!(i.minRent == 0 && i.maxRent == 0)">{{i.minRent}} - {{i.maxRent}}{{i.rentMeasure | rentMeasureFilter}}</span>
+                            <span ng-if="i.minRent == 0 && i.maxRent == 0">面议</span>
+                        </div>
+                    </span>
+                    <div ng-if="i.industryId">行业：{{i.industryId.toString().substr(0, 2)| industryName}}-{{i.industryId | industryName}}<br>
+                    </div>
+
+
+                </div>
+                <div class="media-middle col-md-2 col-xs-2 col-lg-2 lef">
+                    <span >
+                        <span>联系人：{{i.contract}}</span><br>
+                        <span>电话：{{i.mobile}}</span><br>
+                        <span >地址：
+                            <span>{{i.districtName}}</span>
+                        </span>
+                        <br>
+                    </span>
+                </div>
+
+                <div class="media-middle col-md-2 col-xs-2 col-lg-2 lef"  style="height: 80px;overflow-y: hidden;">
+                    {{i.description}}
+                </div>
+                <div class="media-middle col-md-2 col-xs-2 col-lg-2 lef">
+                    <p>发布时间：<span>{{i.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}</span></p>
+                </div>
+            </div>
+            <div class="text-left mt10 pl20">
+                <button class="btn btn-info btn-xs " ng-if="(i.status == 0 && !i.serviceInfo) || (i.status == 0 && i.serviceInfo && i.serviceInfo.status!=2 && i.serviceInfo.status!=3)" ng-click="vm.collect(i.id,i.pluginId,$index)">领取任务</button>
+                <button ng-if="i.status!=3" class="btn btn-info btn-xs " ng-click="vm.addRemark(i.id)">添加备注</button>
+                <a ui-sref="index.main.opportunityDetail({oppId:i.id,activeTab:1,serviceStatus:i.serviceId != 0 ? i.serviceInfo.status : 0})" target="_blank" class="btn btn-info btn-xs">查看备注</a>
+                <button ng-if="i.status!=3 && i.status !=1" class="btn btn-info btn-xs " ng-click="vm.accuseAdd(i.id)">举报</button>
+                <a ng-if="i.status == 2 && i.serviceId > 0" ng-href="http://report.xw18.cn:8081/WebReport/ReportServer?reportlet=xw%2Flist%2F%5B67e5%5D%5B8be2%5D%5B670d%5D%5B52a1%5D%5B8bb0%5D%5B5f55%5D.cpt&__pi__=false&mobile={{i.mobile}}&getid={{i.serviceId}}" target="_blank" class="btn btn-info btn-xs">服务详情</a>
+
+                <a  ng-if="(vm.pluginId == 'xw:transfer' || vm.pluginId == 'xw:siting') && i.status!=2 && i.status!=3" class="btn btn-info btn-xs" ui-sref="index.main.post({oppId:i.id, businessId: 0, fromBusinessHall: 1})" target="_blank">完整修改</a>
+                <a  ng-if="(vm.pluginId == 'xw:transfer' || vm.pluginId == 'xw:siting') && i.status==2 && i.status!=3 && i.requirementId > 0" class="btn btn-info btn-xs" ui-sref="index.main.requirementUpdate({requirementId:i.requirementId, shopId:i.serviceInfo.shopId})" target="_blank">完整修改</a>
+                <button ng-if="(vm.pluginId == 'xw:transfer' || vm.pluginId == 'xw:siting') && i.status!=2 && i.status!=3" class="btn btn-info btn-xs " ng-click="vm.modify(i)">快速修改</button>
+                <a ng-if="(i.status!=3 && !i.serviceInfo) || (i.status!=3 && i.serviceInfo && i.serviceInfo.status!=2 && i.serviceInfo.status!=3)" ui-sref="index.main.platformRecommendfor({ pluginId:i.pluginId,serviceId:i.serviceId,oppId:i.id,title:i.title,cityId:vm.cityId})" target="_blank" class="btn btn-info btn-xs">平台推荐</a>
+                <a ng-if="(i.status!=3 && !i.serviceInfo) || (i.status!=3 && i.serviceInfo && i.serviceInfo.status!=2 && i.serviceInfo.status!=3)" ui-sref="index.main.recommonExample({pluginId:i.pluginId,serviceId:i.serviceId,cityId:vm.cityId})" target="_blank" class="btn btn-info btn-xs">推荐案例</a>
+            </div>
+        </div>
+        <div ng-if="i.modify">
+            <form name="businessHallForm">
+                <!--文字-->
+                <div class="media-body">
+                    <!--左列-->
+                    <div class="media-middle col-md-3 col-lg-3 col-xs-3 lef">
+                        <h4 class="media-heading">
+                            <input name="title" type="text" class="form-control" ng-maxlength="30" placeholder="请输入标题" ng-model="i.title" required>
+                        </h4>
+                        <div class="text-left">
+                            状态:<span>{{i.status | postStatus}}</span>
+                            <span class="label label-warning">{{i.pluginId | pluginIdFilter}}</span>
+                            <span class="label label-info" ng-if="i.isMerchantPost">商家发布</span>
+                            <span class="label label-info" ng-if="i.serviceId != 0">试用</span>
+                        </div>
+                        <span ng-if="i.tramsferStatus">{{i.tramsferStatus}}<br></span>
+                        <span ng-if="i.positionIds && i.positionIds.length > 0 ">职位：<span ng-repeat="position in i.positionIds track by $index">{{position | positionName}}<span ng-if="!$last">、</span></span></span>
+                        <div ng-if="businessHallForm.$error">
+                            <span style="color:red" ng-show="businessHallForm.title.$error.required">标题不能为空</span>
+                            <span style="color:red" ng-show="businessHallForm.title.$error.maxlength">标题不能超过30个字符</span>
+                        </div>
+                    </div>
+
+                    <!--右列-->
+                    <div class="media-middle col-md-3 col-lg-3 col-xs-3 lef">
+                        <div ng-if="i.pluginId == 'xw:transfer'">
+                            <!--{{businessHallForm}}-->
+                            <div class="mb5">面积：
+                                <input class="input-ls" type="number" name="area" ng-model="i.area"
+                                       required min="1" max="999999" ng-maxlength="6" ng-pattern="/^(-?[0-9]+)$/">平米
+                            </div>
+                            <div class="mb5">租金：
+                                <input class="input-ls mr10" type="number" name="rent" ng-model="i.rent" step="0.01"
+                                       required min="0" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/">
+                                <select class="select-ls" name="rentMeasure"  ng-model="i.rentMeasure"
+                                        ng-options="rentMeasure.value as rentMeasure.name for rentMeasure in vm.rentMeasureSelect" required>
+                                </select>
+                            </div>
+                            <div class="mb5" ng-if="i.transferType == 1">转让费：
+                                <input class="input-ls" type="number" name="cost" ng-model="i.cost" step="0.01"
+                                       required min="0.01" max="99999999.99" maxlength="8"  ng-pattern="/^((-?[0-9]+)|(-?[0-9]+\.[0-9]{1,2}))$/">万元
+                            </div>
+                        </div>
+                        <div ng-if="i.pluginId == 'xw:siting'">
+                            <div class="mb5">期望面积：
+                                <input class="input-ls mr10"  ng-model="i.minArea" name="minArea"
+                                       required min="0" max="999999" required min="1" max="999999" ng-pattern="/^(-?[0-9]+)$/">-
+                                <input class="input-ls"  ng-model="i.maxArea"  name="maxArea"
+                                       required min="0" max="999999" required min="1" max="999999" ng-pattern="/^(-?[0-9]+)$/">平米</div>
+                            <div class="mb5">期望租金：
+                                <span ng-if="i.minRent > 0 || i.maxRent > 0">
+                                    <input class="input-ls" ng-model="i.minRent" name="minRent" step="0.01"
+                                           min="0" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/">-
+                                    <input class="input-ls" ng-model="i.maxRent" name="maxRent" step="0.01"
+                                           min="0" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/">
+                                    <select class="select-ls" name="rentMeasure" ng-model="i.rentMeasure"
+                                            ng-options="rentMeasure.value as rentMeasure.name for rentMeasure in vm.rentMeasureSelect">
+                                    </select>
+                                </span>
+                                <span ng-if="i.minRent == 0 && i.maxRent == 0">
+                                    面议
+                                </span>
+                            </div>
+                        </div>
+                        <div ng-if="i.bigIndustry && i.transferType == 1">行业：
+                            <select class="select-ls" title="category"
+                                    ng-model="i.bigIndustry"
+                                    ng-change="vm.loadModifySmallIndustries(i.bigIndustry, vm.pluginId, i)"
+                                    ng-options="industry.code as industry.name for industry in vm.modifyIndustry">
+                            </select>
+                            <select class="select-ls" title="category"
+                                    ng-model="i.industryId"
+                                    ng-options="industry.code as industry.name for industry in vm.smallModifyIndustry">
+                            </select>
+                        </div>
+                        <div ng-if="businessHallForm.$error">
+                            <!--转店面积-->
+                            <span style="color:red" ng-show="businessHallForm.area.$error.required">面积不能为空</span>
+                            <span style="color:red" ng-show="businessHallForm.area.$error.max">面积不能大于999999平米</span>
+                            <span style="color:red" ng-show="businessHallForm.area.$error.min">面积不能小于1平米</span>
+                            <span style="color:red" ng-show="businessHallForm.area.$error.pattern">面积不能有小数</span>
+                            <span style="color:red" ng-show="businessHallForm.area.$error.number">面积只能为数字</span>
+
+                            <!--转店租金-->
+                            <span style="color:red" ng-show="businessHallForm.rent.$error.pattern">租金为6为整数+2位小数</span>
+                            <span style="color:red" ng-show="businessHallForm.rent.$error.min">租金不能小于1元</span>
+                            <span style="color:red" ng-show="businessHallForm.rent.$error.required">租金不能为空</span>
+                            <span style="color:red" ng-show="businessHallForm.rent.$error.number">租金只能为数字</span>
+                            <span style="color:red" ng-show="businessHallForm.rentMeasure.$error.required">租金单位不能为空</span>
+
+                            <!--转店转让费-->
+                            <span style="color:red" ng-show="businessHallForm.cost.$error.max ">转让费不能大于99999999.99万元</span>
+                            <span style="color:red" ng-show="businessHallForm.cost.$error.min ">转让费不能小于0.01万元</span>
+                            <span style="color:red" ng-show="businessHallForm.cost.$error.required && vm.transferType ==vm.shopTransferType">转让费不能为空</span>
+                            <span style="color:red" ng-show="businessHallForm.cost.$error.pattern">不能超过两位小数</span>
+                            <span style="color:red" ng-show="businessHallForm.cost.$error.number">必须是数字</span>
+
+                            <!--找店面积-->
+                            <span style="color:red" ng-show="businessHallForm.minArea.$error.required">请选择最小面积</span>
+                            <span style="color:red" ng-show="businessHallForm.minArea.$error.min">最小面积最小为1</span>
+                            <span style="color:red" ng-show="businessHallForm.minArea.$error.max">最小面积最大为999999</span>
+                            <span style="color:red" ng-show="businessHallForm.minArea.$error.pattern">最小面积不能有小数</span>
+                            <span style="color:red" ng-show="businessHallForm.minArea.$error.number">最小面积只能为数字</span>
+                            <span style="color:red" ng-show="businessHallForm.maxArea.$error.required">请选择最大面积</span>
+                            <span style="color:red" ng-show="businessHallForm.maxArea.$error.min">最小面积最大为1</span>
+                            <span style="color:red" ng-show="businessHallForm.maxArea.$error.max">最小面积最大为999999</span>
+                            <span style="color:red" ng-show="businessHallForm.maxArea.$error.pattern">最小面积不能为小数</span>
+                            <span style="color:red" ng-show="businessHallForm.maxArea.$error.number">最小面积只能为数字</span>
+
+                            <!--找店租金-->
+                            <span style="color:red" ng-show="businessHallForm.minRent.$error.pattern">期望租金为6为整数+2位小数</span>
+                            <span style="color:red" ng-show="businessHallForm.maxRent.$error.pattern">期望租金为6位整数+2位小数</span>
+                            <span style="color:red" ng-show="businessHallForm.maxRent.$error.min">租金不能小于0元</span>
+                            <span style="color:red" ng-show="businessHallForm.minRent.$error.min">租金不能小于0元</span>
+                        </div>
+                    </div>
+                    <div class="media-middle col-md-2 col-xs-2 col-lg-2 lef">
+                        <span >
+                            <span>联系人：
+                                <input type="text" placeholder="联系人" class="form-control" name="contact"  ng-model="i.contract" required ng-minlength="2" ng-maxlength="12">
+                            </span><br>
+                            <span>电话：{{i.mobile}}</span><br>
+                            <span ng-if="i.pluginId == 'xw:transfer'">地址：
+                                <select class="form-control" title="category" name="zone"
+                                        ng-model="i.zone"
+                                        ng-options="district.code as district.name for district in vm.tableDistrict" required
+                                        ng-change="vm.loadTableBusinessAreas(i.zone, i)">
+                                    <option value="">选择区域</option>
+                                </select>
+                                <select class="form-control" title="category" ng-if="vm.tableBusinessArea.length > 0" name="businessId"
+                                        required
+                                        ng-model="i.businessId"
+                                        ng-options="businessArea.code as businessArea.name for businessArea in vm.tableBusinessArea">
+                                    <option value="">选择商圈</option>
+                                </select>
+                            </span><br>
+                            <div ng-if="businessHallForm.$error">
+                            <span style="color:red" ng-show="businessHallForm.contact.$error.required">联系人不能为空</span>
+                            <span style="color:red" ng-show="businessHallForm.contact.$error.maxlength">联系人不能超过12个字符</span>
+                            <span style="color:red" ng-show="businessHallForm.contact.$error.minlength">联系人不能少于2个字符</span>
+                                <span style="color:red" ng-show="businessHallForm.zone.$error.required">请选择区域</span>
+                                <span style="color:red" ng-show="businessHallForm.businessId.$error.required">请选择商圈</span>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="media-middle col-md-2 col-xs-2 col-lg-2 lef" style="height: 80px;overflow-y: hidden;">
+                        <textarea ng-model="i.description" name="description" style="width: 100%" ng-maxlength="1000" required>
+                        </textarea>
+                        <div ng-if="businessHallForm.$error">
+                            <span style="color:red" ng-show="businessHallForm.description.$error.required">描述不能为空</span>
+                            <span style="color:red" ng-show="businessHallForm.description.$error.maxlength">描述不能超过1000个字符</span>
+                        </div>
+
+                    </div>
+                    <div class="media-middle col-md-2 col-xs-2 col-lg-2 lef">
+                        发布时间：<br><span>{{i.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                    </div>
+                </div>
+                <div class="text-left mt10 pl20">
+                    <button class="btn btn-info btn-xs " ng-if="i.status == 0" ng-click="vm.collect(i.id,i.pluginId,$index)">领取任务</button>
+                    <button class="btn btn-info btn-xs " ng-click="vm.addRemark(i.id)">添加备注</button>
+                    <button class="btn btn-info btn-xs " ng-click="vm.accuseAdd(i.id)">举报</button>
+                    <a ng-if="vm.pluginId == 'xw:transfer' || vm.pluginId == 'xw:siting'" class="btn btn-info btn-xs " ui-sref="index.main.post({oppId:i.id, businessId: 0, fromBusinessHall: 1})" target="_blank">完整修改</a>
+                    <button class="btn btn-info btn-xs " ng-click="vm.updateOppo(i)" ng-disabled="!businessHallForm.$valid">提交修改</button>
+                    <a ui-sref="index.main.opportunityDetail({oppId:i.id,activeTab:1,serviceStatus:i.serviceId != 0 ? i.serviceInfo.status : 0})" target="_blank" class="btn btn-info btn-xs">查看备注</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div ng-include="'views/partial/pageFliper.html'"></div>
+</div>

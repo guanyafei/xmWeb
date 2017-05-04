@@ -1,0 +1,29 @@
+<div class="relation_remark">
+    <span>关联备注：是指与当前信息手机或其他手机相同的所有信息的业务备注</span><br>
+    <span></span><br>
+    {{vm.getContent}}
+</div>
+<div class="row media_relation" ng-repeat="remark in vm.list" style="border-bottom: 1px solid #f2f2f2">
+     <!--<div class="media-middle col-sm-1 relation_top">-->
+    <!--<img ng-src="{{vm.getAvatar}}" style="width: 36px ; height: 36px; float: left">-->
+    <!--</div>-->
+
+        <div class="media-middle col-sm-3 relation_top">
+            <li class="text-left">
+                <span style="padding-right: 20px">{{remark.nickName}}</span>  <span>{{remark.createTime | date: 'yyyy-MM-dd HH:mm'}}</span>
+            </li>
+        </div>
+        <div class="text-left col-sm-8 relation_top">【信息编号：{{remark.oppId}}】{{remark.content}}</div>
+</div>
+<div class="row">
+    <div class="col-lg-5" style="line-height:34px;">
+        总数{{vm.totalCount}}条 共{{numPages}}页
+    </div>
+    <div class="col-lg-7">
+        <nav class="xw-pagination-container">
+            <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages"
+                            total-items="vm.totalCount" items-per-page="vm.pageSize" ng-model="vm.currentPage"
+                            ng-change="vm.RelationRemark()"></uib-pagination>
+        </nav>
+    </div>
+</div>

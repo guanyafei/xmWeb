@@ -1,0 +1,172 @@
+<section class="">
+    <ol class="breadcrumb ">
+        <li>为{{vm.title}}
+           <!-- {{vm.pluginId | pluginIdFilter}}-->
+            平台推荐
+        </li>
+    </ol>
+</section>
+<div>
+
+    <form action="" role="form" class="form-horizontal form-inline" style="margin-bottom: 20px;margin-left: 20px;" name="recomForm">
+        <div class="form-group">
+
+            <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'">经营行业:</label>
+            <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'">适合行业:</label>
+            <select class=" form-control" title="category"
+                    ng-model="vm.industryId"
+                    ng-change="vm.loadSmallIndustries(vm.industryId)"
+                    ng-options="industry.code as industry.name for industry in vm.industry">
+                <option value="">行业</option>
+            </select>
+            <select class="form-control" title="category"
+                    ng-model="vm.smallIndustryId"
+                    ng-options="industry.code as industry.name for industry in vm.smallIndustry" ng-change="vm.smallindustryChange(vm.smallIndustryId)">
+                <option value="">小行业</option>
+            </select>
+            <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'">期望区域:</label>
+            <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'">区域:</label>
+
+            <select class="form-control" title="category"
+                    ng-model="vm.districtId"
+                    ng-options="district.code as district.name for district in vm.district"
+                    ng-change="vm.loadBusinessAreas(vm.districtId)">
+                <option value="">选择区域</option>
+            </select>
+            <select class="form-control" title="category"
+                    ng-model="vm.businessAreaId"
+                    ng-options="businessArea.code as businessArea.name for businessArea in vm.businessArea">
+                <option value="">选择商圈</option>
+            </select>
+            <br>
+            <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'">期望面积:</label>
+            <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'">面积:</label>
+            <input name="minArea" class="form-control" type="number" ng-model="vm.minArea" placeholder="最小面积" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> -
+            <input name="maxArea" class="form-control" type="number" ng-model="vm.maxArea" placeholder="最大面积" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> ㎡
+            <!--<label class="opportunity-control-label">录入账号：</label>
+            <input class="form-control" type="text" placeholder="输入账号">-->
+
+
+
+
+            <label class="opportunity-control-label" ng-if="vm.pluginId=='xw:siting'" >期望租金:</label>
+            <label  class="opportunity-control-label"  ng-if="vm.pluginId=='xw:transfer'" >租金:</label>
+            <input name="minRent" class="form-control" type="number" ng-model="vm.minRent" placeholder="最小租金" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> -
+            <input name="maxRent" class="form-control" type="number" ng-model="vm.maxRent" placeholder="最大租金" ng-pattern="/^((-?[0-9]{1,6})|(-?[0-9]{1,6}\.[0-9]{1,2}))$/" min="0"> 元/月
+            <label  class="opportunity-control-label">排序:</label>
+            <select name="area" id="area"  class="form-control" ng-model="vm.orderbyrecom" ng-options="orderby.value as orderby.name for orderby in vm.orderbyrecomSelected">
+            </select>
+            <input  type="button" class="btn btn-info"    value="查询" ng-click="vm.querySitingTransfer(recomForm.$valid)">
+
+            <div style="position: relative"   ng-if="(!recomForm.$valid) || (vm.minRent && (vm.maxRent==''||vm.maxRent==null)) || (vm.minArea && (vm.maxArea ==''||vm.maxArea==null))">
+                <p style="color:red;position: absolute;left: 560px" ng-if="recomForm.minRent.$error.pattern">最小租金为6为整数+2位小数</p>
+                <p style="color:red;position: absolute;left: 780px" ng-if="recomForm.maxRent.$error.pattern">最大租金为6为整数+2位小数</p>
+                <p style="color:red;position: absolute;left: 560px" ng-if="recomForm.minRent.$error.min">租金不能为负</p>
+                <p style="color:red;position: absolute;left: 780px"  ng-if="recomForm.maxRent.$error.min">租金不能为负</p>
+                <p style="color:red;position: absolute;left: 80px"  ng-if="recomForm.minArea.$error.pattern">最小面积为6为整数+2位小数</p>
+                <p style="color:red;position: absolute;left: 280px" ng-if="recomForm.maxArea.$error.pattern">最大面积为6为整数+2位小数</p>
+                <p style="color:red;position: absolute;left: 80px"  ng-if="recomForm.minArea.$error.min">面积不能为负</p>
+                <p style="color:red;position: absolute;left: 280px"  ng-if="recomForm.maxArea.$error.min">面积不能为负</p>
+                <p style="color:red;position: absolute;left: 560px" ng-if="!recomForm.maxRent.$error.pattern && vm.minRent && (vm.maxRent==''||vm.maxRent==null)">如果填写了最小租金，则填最大租金，也可只填写最大租金</p>
+                <p style="color:red;position: absolute;left: 80px" ng-if="!recomForm.maxRent.$error.pattern && vm.minArea && (vm.maxArea ==''||vm.maxArea==null)">如果填写了最小面积，则填最大面积，也可只填写最大面积</p>
+        </div>
+            <br>
+            <label class=" opportunity-control-label">关键字搜索:</label>
+            <input name="phonenum" type="number" ng-minlength="11" ng-maxlength="11" ng-model="vm.keyword" ng-keypress="vm.enterPress($event)" class="form-control" id="exampleInputName2" placeholder="输入手机号码">
+            <input name="idnum" type="number"  ng-pattern="/^([0-9]{1,9})$/" ng-if="vm.pluginId == 'xw:transfer' || vm.pluginId == 'xw:siting'" ng-model="vm.idnum" ng-keypress="vm.enterPress($event)" ng-keydown="vm.eKey($event)" class="form-control" id="exampleInputName3" placeholder="输入编号">
+            <button type="button" class="btn btn-info" ng-click="vm.search(recomForm.$valid)">搜索</button>
+
+
+<!--//ng-if="(!recomsearchForm.$valid)" -->
+        <div style="position: relative" ng-if="(!recomForm.$valid)" >
+            <p  style="color:red;position: absolute;left: 280px" ng-if="recomForm.idnum.$error.pattern">编号为1-9位整数</p>
+            <p style="color:red;position: absolute;left: 280px" ng-if="vm.e_num==true">此处e为字母，不能输入字母</p>
+            <p style="color:red;position: absolute;left: 80px" ng-if="recomForm.phonenum.$error.minlength">手机号码为11位整数</p>
+            <p style="color:red;position: absolute;left: 80px" ng-if="recomForm.phonenum.$error.maxlength">手机号码为11位整数</p>
+        </div>
+        </div>
+        </form>
+</div>
+
+
+
+<div class="cle"></div>
+
+<div class="recomlist">
+    <span>
+    <label class="opportunity-control-label mb10">类型：</label>
+        <span class="pointer typeSelectItem" ng-class="{actived: vm.type == 1}" ng-click="vm.changeType(1)">平台推荐</span>
+        <span class="pointer typeSelectItem" ng-class="{actived: vm.type == 2}" ng-click="vm.changeType(2)">最新信息</span>
+        <span class="pointer typeSelectItem" ng-class="{actived: vm.type == 3}" ng-click="vm.changeType(3)">参考信息</span>
+        <br>
+    </span>
+</div>
+<div style="margin-left: 40px;margin-bottom: 15px;">
+    <span ng-if="vm.type == 1">【给你匹配了<span class="font-red">{{vm.totalCount}}</span>条适合的信息】</span>
+    <span ng-if="vm.type == 2">【最新发布的<span class="font-red">{{vm.totalCount}}</span>条适合的信息】</span>
+    <span ng-if="vm.type == 3">【<span class="font-red">{{vm.totalCount}}</span>条待确认信息，供您参考】</span>
+</div>
+<div class="xw-table" style="width: 900px;margin-left: 40px">
+    <div class="xw-table-head">
+        <span class="col-xs-8"><span ng-if="vm.pluginId == 'xw:transfer'">找店</span><span ng-if="vm.pluginId == 'xw:siting'">转店</span>资源</span>
+        <span class="col-xs-3">发布时间</span>
+        <span class="col-xs-1">操作</span>
+    </div>
+    <div class="xw-table-row" ng-repeat="resource in vm.resourceList">
+        <span class="col-xs-8">
+            <h5 class="mb10 f-l mr20"><a ng-click="vm.showDetail($index)">{{resource.title}}</a></h5><span ng-if="resource.recommended" class="label label-danger">已推荐</span>
+            <div class="cle"></div>
+            {{vm.slogan}}
+            <span ng-if="resource.content.area || resource.content.maxArea || resource.content.minArea">{{resource.content.area}}<span ng-if="vm.pluginId == 'xw:transfer'">{{resource.content.minArea}} - {{resource.content.maxArea}}</span>平米</span>
+            <span><span ng-if="vm.pluginId == 'xw:siting'">{{resource.content.rent/100}}{{resource.content.rentMeasure |rentMeasureFilter}}</span><span ng-if="vm.pluginId == 'xw:transfer'">{{resource.content.minRent/100}} - {{resource.content.maxRent/100}}{{resource.content.rentMeasure | rentMeasureFilter}}</span></span>
+        </span>
+		<span class="col-xs-3">
+            {{resource.publishTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+        </span>
+		<span class="col-xs-1">
+            <span class="btn-xs btn-info pointer" ng-click="vm.showDetail($index)">查看</span>
+		</span>
+        <div class="cle"></div>
+        <div ng-if="resource.showDetail" class="xw-table-detail col-xs-12">
+            <div class="xw-table-detail-toolbar">
+             <!--       <span ng-if="vm.recommendType == 'service'">
+                        <label class="opportunity-control-label">业务状态：</label>{{resource.detail.status | postStatus}}
+                        <label class="opportunity-control-label">有效状态：</label><span class="font-red">{{resource.detail.validity | validutyFilter}}</span>
+                    </span>-->
+           <!--     <p>1:{{resource.recommended}},2:{{resource.detail.serviceId }},3:{{vm.serviceId }}</p>-->
+                <a ng-click="vm.confirmRecord(resource)">[确认记录]</a>
+                <span class="glyphicon glyphicon-remove f-r pointer" style="font-size: 24px;" aria-hidden="true" ng-click="vm.hideDetail($index)"></span>
+                    <span class="f-r mr20">
+                        <button ng-if="resource.detail.opportunityId > 0" class="btn btn-info" ng-click="vm.accuseAdd(resource.detail.opportunityId)">举报</button>
+                        <button ng-if="!resource.recommended && (resource.detail.serviceId > 0 || vm.serviceId > 0)"  class="btn btn-info" ng-click="vm.recommend($index)">推荐</button>
+                        <div ng-if="vm.serviceId > 0" style="display: inline-block">
+                            <button  class="btn btn-info"  ng-click="vm.addOppExperiences($index)"  ng-if="!vm.try_to_recomed[$index]"  data-toggle="tooltip" title="体验推荐：推荐的信息，客户可见信息的号码" data-placement="right">体验推荐[公开号码]</button>
+                        </div>
+                     <!--   <div class="tooltip right" role="tooltip">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner">
+                                体验推荐：推荐的信息，客户可见信息的号码
+                            </div>s
+                        </div>-->
+
+                   </span>
+            </div>
+            <div class="xw-table-detail-content">
+                <div ng-include="'views/partial/recommendation/recommendationDetailfor.html'"></div>
+            </div>
+        </div>
+        <div class="cle"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-5" style="line-height:34px;">
+        总数{{vm.totalCount}}条 共{{numPages}}页
+    </div>
+    <div class="col-lg-7">
+        <nav class="xw-pagination-container">
+            <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages" total-items="vm.totalCount" items-per-page="vm.pageSize" ng-model="vm.currentPage" ng-change="vm.flipPage()"></uib-pagination>
+        </nav>
+    </div>
+</div>
+

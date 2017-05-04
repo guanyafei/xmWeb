@@ -1,0 +1,8 @@
+<li class="delete" id="{{photoId}}">
+    <img width="140" height="100" ng-src="{{thumbUrl}}" />
+    <a href="javascript:void(0)" >
+        <span class="glyphicon glyphicon-chevron-left ml30" aria-hidden="true" ng-click="leftMove({id:photoId, direction:'left', container: container})"></span>
+        <span class="glyphicon glyphicon-chevron-right ml30" aria-hidden="true" ng-click="rightMove({id:photoId, direction:'right', container: container})"></span>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="remove();removeThumb({id:photoId})"></span>
+    </a>
+</li>

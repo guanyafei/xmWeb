@@ -1,0 +1,37 @@
+<div class="modal-header">
+	<button type="button" ng-click="vm.cancel()" class="close"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title">确认记录</h4>
+</div>
+<div class="modal-body">
+	<uib-tabset active="vm.active">
+		<uib-tab index="0" heading="显示记录">
+			<div ng-repeat="resourceHistoryItem in vm.resourceHistoryItems" style="border-bottom: 1px solid #eee; padding-top: 10px; padding-bottom: 10px;">
+				<div>昵称：{{resourceHistoryItem.nickname}}<span ng-if="resourceHistoryItem.isMerchant">（商户）</span>&nbsp;&nbsp;&nbsp;时间：{{resourceHistoryItem.createTime | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
+				<div class="col-lg-offset-1">{{resourceHistoryItem.content}}</div>
+			</div>
+		</uib-tab>
+		<uib-tab ng-show="vm.resourceHistoryModalResource.detail.validity==0 || vm.resourceHistoryModalResource.detail.validity==1" index="1" heading="添加记录">
+			<form name="confirmationRecordForm" novalidate>
+				<textarea ng-model="vm.confirmationRecordContent" name="confirmationRecord" required placeholder="确认记录，限300字" style="width: 100%; height: 150px;"></textarea>
+				<div class="text-right">
+					<button ng-click="vm.cancel()" type="button" class="btn btn-default">取消</button>
+					<button ng-click="vm.add()" ng-disabled="confirmationRecordForm.confirmationRecord.$invalid" type="button" class="btn btn-primary">提交</button>
+				</div>
+				<div>说明：点击提交，系统不返回提示了哦</div>
+			</form>
+		</uib-tab>
+		<uib-tab ng-show="vm.resourceHistoryModalResource.detail.validity==2 || vm.resourceHistoryModalResource.detail.validity==3" index="2" heading="申诉">
+			<form name="appealForm" novalidate>
+				<textarea ng-model="vm.appealContent" name="appeal" required placeholder="请谨慎操作，务必联系一下，确认是否属于误判。申诉理由，限300字" style="width: 100%; height: 150px;"></textarea>
+				<div class="text-right">
+					<button ng-click="vm.cancel()" type="button" class="btn btn-default">取消</button>
+					<button ng-click="vm.appealAdd()" ng-disabled="appealForm.appeal.$invalid" type="button" class="btn btn-primary">提交</button>
+				</div>
+				<div>说明：点击提交，系统不返回提示了哦</div>
+			</form>
+		</uib-tab>
+	</uib-tabset>
+</div>
+<div class="modal-footer">
+
+</div>

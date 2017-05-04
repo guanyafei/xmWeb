@@ -1,0 +1,121 @@
+<section>
+    <ol class="breadcrumb ">
+        <li>收集信息</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-sm-12 clearfix xw-service-hall">
+        <form name="searchForm">
+            <ul>
+                <li class="clearfix toolbar-line form-group">
+                    <!--选择区域-->
+                    <span class="mr10">
+                            <span>城市:</span>
+                            <select class="select-s" name="district"
+                                    ng-model="vm.cityId"
+                                    ng-change="vm.cityChanged(vm.cityId)"
+                                    ng-options="city.code as city.name for city in vm.cityselect">
+                            </select>
+                         </span>
+                    <!--来源-->
+                    <span class="mr10">
+                            <span>来源:</span>
+                            <select class="select-s" name="source"
+                                    ng-model="vm.source"
+                                    ng-change="vm.sourceChanged(vm.source)"
+                                    ng-options="source.value as source.name for source in vm.sourceSelect">
+                            </select>
+                    </span>
+                    <!--类型-->
+                    <span class="mr10">
+                            <span>类型:</span>
+                            <select class="select-s" name="type"
+                                    ng-model="vm.type"
+                                    ng-change="vm.typeChanged(vm.type)"
+                                    ng-options="type.value as type.name for type in vm.typeSelect">
+                            </select>
+                    </span>
+                    <span>
+                            <button ng-click="vm.querybutton()" class="btn btn-info">查询</button>
+                    </span>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+
+<div class="xw-table">
+    <div class="title-business" style="border-bottom: 1px solid #f2f2f2">
+        <span class="col-md-2">来源|发布时间</span>
+        <span class="col-md-3">标题|类型</span>
+        <span class="col-md-3">电话|地址</span>
+        <span class="col-md-3">店名|类型等</span>
+        <span class="col-md-1">详情描述</span>
+    </div>
+
+    <div class="xw-table-row" ng-repeat="info in vm.list">
+        <div class="media-body">
+            <div class="media-middle col-md-2 lef">
+                <span>城市：{{info.cityCode | cityName}}</span><br>
+                <span style="color: red">类型：{{info.type | transferType}}</span><br>
+                <span>来源：{{info.source | sourceType}}</span><br>
+                <span>发布时间：{{info.createTime | date: 'yyyy-MM-dd HH:mm'}}</span>
+            </div>
+            <div class="media-middle col-md-3 lef">
+                <span>标题：<a ng-href="{{info.url}}" target="_blank">{{info.title}}</a></span><br>
+                <span>行业：{{info.industry}}</span><br>
+                <span style="color: red">面积：
+                    <span ng-if="vm.type==1 || vm.type==2 || vm.type==0">{{info.area}}㎡</span>
+                    <span ng-if="vm.type==3">{{info.subArea +"-"+ info.area}}㎡</span>
+                </span><br>
+                <span style="color: red">租金：
+                    <span ng-if="(vm.type==1 || vm.type==2 || vm.type==0) && info.rent != 0">{{info.rent}}{{info.rentUnit | rentMeasureFilter}}</span>
+                    <span ng-if="vm.type==3 && info.rent != 0">{{info.subArea +"-"+ info.area}}{{info.rentUnit | rentMeasureFilter}}</span>
+                    <span ng-if="info.rent==0">面议</span>
+                </span><br>
+                <span>转让费：
+                    <span ng-if="info.cost != 0">{{info.cost}}{{info.costUnit | costMeasureFilter}}</span>
+                    <span ng-if="info.cost==0">面议</span>
+                </span>
+            </div>
+            <div class="media-middle col-md-3 lef">
+                <span>联系人：{{info.contact}}</span><br>
+                <span>电话：
+                    <span ng-if="info.source == 1">
+                        <span ng-if="!(info.tel | typeFilter)"><img ng-src="{{info.tel}}" style="width: 100px;height: 30px"></span>
+                        <span ng-if="(info.tel | typeFilter)">{{info.tel}}</span>
+                    </span>
+                    <span ng-if="info.source != 1">{{info.tel}}</span>
+                </span><br>
+                <span ng-if="vm.type==1 || vm.type==2 || vm.type==0">地址：{{info.district +" "+ info.business_center +" "+ info.address +" 临近"+ info.neighborhood}}</span>
+                <!--<span>区域：{{info.district}}</span><br>-->
+                <span ng-if="vm.type==3">期望区域：{{info.neighborhood}}</span><br>
+                <!--<span>商圈：{{info.business_center}}</span>-->
+            </div>
+            <div class="media-middle col-md-3 lef">
+                <span>店名：{{info.shopName}}</span><br>
+                <span>商铺类型：{{info.industryType}}</span><br>
+                <span>经营状态：{{info.shopState | shop_status}}</span><br>
+                <span>历史经营：{{info.engaged}}</span><br>
+                <span>适合经营：{{info.suit}}</span>
+            </div>
+            <div class="media-middle col-md-1 lef">
+                <a ng-click="vm.detail($index)"><span>详情</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-5" style="line-height:34px;">
+        总数{{vm.totalCount}}条 共{{numPages}}页
+    </div>
+
+    <div class="col-sm-7 col-md-7">
+        <nav class="xw-pagination-container">
+            <uib-pagination previous-text="上一页" next-text="下一页" max-size="10" rotate="false" num-pages="numPages"
+                            total-items="vm.totalCount" items-per-page="vm.pageSize" ng-model="vm.currentPage"
+                            ng-change="vm.query()"></uib-pagination>
+        </nav>
+    </div>
+</div>

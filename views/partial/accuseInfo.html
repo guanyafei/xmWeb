@@ -1,0 +1,50 @@
+<div class="modal-header">
+    <h3 class="modal-title">举报信息</h3>
+</div>
+<div class="modal-body">
+    <form name="accuseForm">
+        <div>
+            <h5 class="title-control"><span class="text-danger title-control">*</span>举报原因:</h5>
+            <div class="normal-line pl30">
+                <label>
+                    <input ng-model="vm.reason" type="radio" ng-value="vm.accuseReasonOne"><span>信息无效</span>
+                </label>
+            </div>
+            <div class="normal-line pl30">
+                <label>
+                    <input ng-model="vm.reason" type="radio" ng-value="vm.accuseReasonTwo"><span>手机号码错误，联系不上</span>
+                </label>
+            </div>
+            <div class="normal-line pl30">
+                <label>
+                    <input ng-model="vm.reason" type="radio" ng-value="vm.accuseReasonThree"><span>信息与实际不符，需要修改</span>
+                </label>
+            </div>
+        </div>
+        <div class="mt10">
+            <h5 class="title-control"><span class="text-danger">*</span>详细说明:</h5>
+            <div class="pl30">
+                <textarea name="description" ng-model="vm.description" style="width: 500px; height: 100px;" placeholder="限1-300字" required ng-minlength="1" ng-maxlength="300"></textarea>
+            </div>
+        </div>
+
+        <div class="pl30" ng-show="vm.submitted">
+            <div class="text-danger" ng-if="accuseForm.description.$error.required">
+                详细说明必填
+            </div>
+            <div class="text-danger" ng-if="accuseForm.description.$error.minlength">
+                详细说明最小长度为1
+            </div>
+            <div class="text-danger" ng-if="accuseForm.description.$error.maxlength">
+                详细说明最大长度为300
+            </div>
+        </div>
+    </form>
+
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.accuseSubmit(accuseForm.$valid)">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>
